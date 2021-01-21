@@ -2,6 +2,7 @@ const path = require('path');
 const tasks = require('./tasks').tasks;
 
 const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 
 const entries = {};
@@ -12,7 +13,7 @@ for (var k in tasks) {
 
 function addTask(order, id) {
   const orderAndId = order + '.' + id;
-  entries[id] = ['./src/' + orderAndId + '/index.js'];
+  entries[id] = [`./src/${orderAndId}/index`];
   rewrites.push({
     from: new RegExp('^\/(' + orderAndId.replace(/\./, '\\.') + ')|(' + order + ')$', 'i'),
     to: '/src/' + orderAndId + '/index.html'
@@ -30,7 +31,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: ['babel-loader']
       },
@@ -42,12 +43,16 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   devServer: {
+    writeToDisk: true,
     historyApiFallback: {
       rewrites: rewrites,
     },
   },
-  plugins: [new ESLintPlugin()]
+  plugins: [
+      new ForkTsCheckerWebpackPlugin(),
+      new ESLintPlugin()
+  ]
 };

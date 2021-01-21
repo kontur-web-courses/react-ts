@@ -10,25 +10,25 @@ ReactDom.render(
         <div className="caption">
           <label htmlFor="name">Имя</label>
         </div>
-        <input id="name" type="text" size="39" />
+        <input id="name" type="text" size={39} />
       </div>
       <div className="row">
         <div className="caption">
           <label htmlFor="mail">Почта</label>
         </div>
-        <input id="mail" type="email" size="39" />
+        <input id="mail" type="email" size={39} />
       </div>
       <div className="row">
         <div className="caption">
           <label htmlFor="city">Город</label>
         </div>
-        <input id="city" type="city" size="39" defaultValue="Екатеринбург" />
+        <input id="city" type="city" size={39} defaultValue="Екатеринбург" />
       </div>
       <div className="row">
         <div className="caption">
           <label htmlFor="comment">Отзыв</label>
         </div>
-        <textarea id="comment" cols="40" />
+        <textarea id="comment" maxLength={40} />
       </div>
       <div className="row">
         <div className="caption">

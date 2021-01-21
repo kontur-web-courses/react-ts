@@ -1,9 +1,10 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "no-console": "off",
     "no-useless-escape": "off",
@@ -12,7 +13,9 @@
     "object-shorthand": "off",
     "prefer-template": "off",
     "no-debugger": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-types": "off"
   },
   "env": {
     "browser": true,
