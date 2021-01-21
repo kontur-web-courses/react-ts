@@ -1,15 +1,17 @@
-var path = require('path');
-var tasks = require('./tasks').tasks;
+const path = require('path');
+const tasks = require('./tasks').tasks;
+
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 
-var entries = {};
-var rewrites = [];
+const entries = {};
+const rewrites = [];
 for (var k in tasks) {
   addTask(tasks[k].order, tasks[k].id);
 }
 
 function addTask(order, id) {
-  var orderAndId = order + '.' + id;
+  const orderAndId = order + '.' + id;
   entries[id] = ['./src/' + orderAndId + '/index.js'];
   rewrites.push({
     from: new RegExp('^\/(' + orderAndId.replace(/\./, '\\.') + ')|(' + order + ')$', 'i'),
@@ -30,11 +32,11 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader']
+        use: ['babel-loader']
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -46,5 +48,6 @@ module.exports = {
     historyApiFallback: {
       rewrites: rewrites,
     },
-  }
+  },
+  plugins: [new ESLintPlugin()]
 };
