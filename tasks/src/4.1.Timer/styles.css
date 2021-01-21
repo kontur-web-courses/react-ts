@@ -1,0 +1,44 @@
+/* Styling it all now! */
+* {
+  font-family: arial;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #b9b7b1;
+}
+
+.page {
+  margin: auto;
+  width: 300px;
+  text-align: center;
+}
+
+.time {
+  position: relative;
+  left: 50%;
+  margin-left: -150px;
+  width: 300px;
+  padding: 20px;
+  text-align: center;
+  font-size: 30px;
+  border-top: 3px solid #e54b6b;
+  background: #fff;
+  color: #707070;
+}
+
+.button {
+  width: 100px;
+  height: 34px;
+  border-radius: 2px 2px 2px 2px;
+  padding: 0 15px;
+  margin: 5px;
+  border: solid 2px;
+}
+
+.button:hover {
+  cursor: pointer;
+}
