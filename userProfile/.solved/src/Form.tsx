@@ -1,11 +1,17 @@
 import React from 'react';
-import Button from '@skbkontur/react-ui/Button';
-import Input from '@skbkontur/react-ui/Input';
-import Select from '@skbkontur/react-ui/Select';
-import Gapped from '@skbkontur/react-ui/Gapped';
-import Modal from '@skbkontur/react-ui/Modal';
+import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
 
-const cities = ['Москва', 'Урюпинск', 'Новосибирск', 'Екатеринбург', 'Тагиииил'];
+type FormData = {
+    name: string;
+    surname: string;
+    city: string;
+}
+
+type FormState = {
+    modalOpened: boolean;
+    saved: FormData;
+    current: FormData;
+}
 
 const defaultData = {
     name: '',
@@ -13,14 +19,16 @@ const defaultData = {
     city: 'Екатеринбург',
 };
 
-export default class Form extends React.Component {
-    state = {
+const cities = ['Москва', 'Урюпинск', 'Новосибирск', 'Екатеринбург', 'Тагиииил'];
+
+export default class Form extends React.Component<{}, FormState> {
+    public state: FormState = {
         modalOpened: false,
         saved: { ...defaultData },
         current: { ...defaultData },
     };
 
-    render () {
+    public render () {
         const { modalOpened } = this.state;
         return (
             <div>
@@ -31,8 +39,8 @@ export default class Form extends React.Component {
         );
     }
 
-    renderForm() {
-        const { name, surname, city  } = this.state.current;
+    private renderForm() {
+        const { name, surname, city } = this.state.current;
         return (
             <form>
                 <Gapped gap={15} vertical>
@@ -40,25 +48,25 @@ export default class Form extends React.Component {
                         <div className='label'>Имя</div>
                         <Input
                             placeholder='Введите имя пользователя'
-                            value={ name }
-                            onChange={this.onChange('name')}
+                            value={name}
+                            onValueChange={this.onChange('name')}
                         />
                     </label>
                     <label>
                         <div className='label'>Фамилия</div>
                         <Input
                             placeholder='Введите фамилию пользователя'
-                            value={ surname }
-                            onChange={this.onChange('surname')}
+                            value={surname}
+                            onValueChange={this.onChange('surname')}
                         />
                     </label>
                     <label>
                         <div className='label'>Город</div>
-                        <Select
+                        <Select<string>
                             placeholder='Выберите город'
                             items={cities}
-                            value={ city }
-                            onChange={this.onChange('city')}
+                            value={city}
+                            onValueChange={this.onChange('city')}
                         />
                     </label>
                     <Button use='primary' size='large' onClick={this.openModal}>Сохранить</Button>
@@ -67,17 +75,15 @@ export default class Form extends React.Component {
         );
     }
 
-    renderModal() {
-        const { name, surname, city  } = this.state.current;
-        const { saved } = this.state;
-        const isNothingChanged = saved.name === name && saved.surname === surname && saved.city === city;
+    private renderModal() {
+        const { saved, current } = this.state;
+        const isNothingChanged = (Object.keys(current) as (keyof FormData)[]).every((key) => saved[key] === current[key]);
         return (
             <Modal onClose={this.closeModal}>
                 <Modal.Header>Пользователь сохранен</Modal.Header>
                 <Modal.Body>
                     <p>Измененные данные:</p>
-                    { isNothingChanged && 'ничего' }
-                    { !isNothingChanged && this.renderChanges() }
+                    { isNothingChanged ? 'ничего' : this.renderChanges() }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={this.closeModal}>Закрыть</Button>
@@ -86,49 +92,52 @@ export default class Form extends React.Component {
         );
     }
 
-    renderChanges() {
-        const { name, surname, city  } = this.state.current;
-        const { saved } = this.state;
-
+    private renderChanges() {
         return (
             <p>
-                {saved.name !== name && this.renderDiff('Имя', saved.name, name)}
-                {saved.surname !== surname && this.renderDiff('Фамилия', saved.surname, surname)}
-                {saved.city !== city && this.renderDiff('Город', saved.city, city)}
+                {this.renderDiff('name','Имя')}
+                {this.renderDiff('surname','Фамилия')}
+                {this.renderDiff('city','Город')}
             </p>
         );
     }
 
-    renderDiff(field, prevValue, currentValue) {
+    private renderDiff(field: keyof FormData, fieldName: string) {
+        const {current, saved} = this.state;
+
+        if (current[field] === saved[field]) {
+            return null;
+        }
+
         return (
             <React.Fragment>
-                {field}: было {prevValue || '*ничего*'}, стало {currentValue || '*ничего*'} <br/>
+                {fieldName}: было {saved[field] || '*ничего*'}, стало {current[field] || '*ничего*'} <br/>
             </React.Fragment>
         );
     }
 
-    openModal = () => {
+    private openModal = () => {
         this.setState({
             modalOpened: true,
         });
     };
 
-    closeModal = () => {
+    private closeModal = () => {
         this.setState({
             modalOpened: false,
             saved: {...this.state.current},
         });
     };
 
-    onChange = (field) => {
-        return (_, val) => {
+    private onChange = (field: keyof FormData) => {
+        return (value: string) => {
             this.setState({
                 current: {
                     ...this.state.current,
-                    [field]: val,
+                    [field]: value,
                 }
             });
-        } 
+        }
     }
 }
 
