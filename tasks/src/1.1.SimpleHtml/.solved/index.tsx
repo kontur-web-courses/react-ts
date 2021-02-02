@@ -37,10 +37,7 @@ ReactDom.render(
         <input id="agreement" type="checkbox" defaultChecked />
       </div>
       <br />
-      <div
-        className="row"
-        style={{ marginTop: '10px', width: '400px', textAlign: 'center' }}
-      >
+      <div className="row" style={{ marginTop: '10px', width: '400px', textAlign: 'center' }}>
         <input type="button" className="button" defaultValue="Отправить" />
       </div>
     </div>

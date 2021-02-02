@@ -1,8 +1,11 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
@@ -15,7 +18,8 @@
     "no-debugger": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/ban-types": "off"
+    "@typescript-eslint/ban-types": "off",
+    "prettier/prettier": "warn"
   },
   "env": {
     "browser": true,
@@ -24,7 +28,7 @@
     "es6": true
   },
   "parserOptions": {
-    "ecmaVersion": 2015,
+    "ecmaVersion": 2019,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
@@ -36,6 +40,8 @@
     }
   },
   "plugins": [
-    "react"
+    "prettier",
+    "react",
+    "@typescript-eslint"
   ]
 }
