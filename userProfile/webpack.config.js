@@ -1,10 +1,11 @@
 const path = require('path');
 
 const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 
 module.exports = {
-  entry: path.resolve('src','index.js'),
+  entry: path.resolve('src','index'),
   output: {
     path: path.resolve('build'),
     publicPath: 'build',
@@ -14,7 +15,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.[jt]sx?$/,
         use: ['babel-loader']
       },
       {
@@ -33,7 +34,13 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
-  plugins: [new ESLintPlugin()]
+  devServer: {
+    writeToDisk: true
+  },
+  plugins: [
+    new ESLintPlugin(),
+    new ForkTsCheckerWebpackPlugin()
+  ]
 };

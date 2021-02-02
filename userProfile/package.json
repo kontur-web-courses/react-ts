@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode development && exit 0",
-    "start": "webpack serve  --mode development"
+    "start": "webpack serve --mode development"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,11 @@
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
+    "@babel/preset-typescript": "^7.12.7",
+    "@types/react": "^16.14.2",
+    "@types/react-dom": "^16.9.10",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.1",
@@ -22,9 +27,11 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-webpack-plugin": "^2.4.3",
     "file-loader": "^6.2.0",
+    "fork-ts-checker-webpack-plugin": "^6.1.0",
     "less-loader": "^7.3.0",
     "prop-types": "^15.7.2",
     "style-loader": "^2.0.0",
+    "typescript": "^4.1.3",
     "webpack": "^5.16.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
