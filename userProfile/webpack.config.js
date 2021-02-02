@@ -1,5 +1,6 @@
 const path = require('path');
 
+const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
@@ -35,11 +36,17 @@ module.exports = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    alias: {
+      process: "process/browser"
+    }
   },
   devServer: {
     writeToDisk: true
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
     new ESLintPlugin(),
     new ForkTsCheckerWebpackPlugin()
   ]
