@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import Form from './Form'
+import Form from './Form';
 import './style.css';
 
 /**
@@ -37,7 +37,4 @@ import './style.css';
  *  дублирования.
  */
 
-ReactDom.render(
-    <Form />,
-    document.getElementById('react')
-);
+ReactDom.render(<Form />, document.getElementById('react'));
