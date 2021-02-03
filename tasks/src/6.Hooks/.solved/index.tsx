@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactDom from "react-dom";
-import "./styles.css";
+import React, { useState, useRef, useEffect } from 'react';
+import ReactDom from 'react-dom';
+import './styles.css';
 
 const App = () => {
   const lastBlockIdRef = useRef(0);
-  const [blockIds, setBlockIds] = useState([]);
+  const [blockIds, setBlockIds] = useState<number[]>([]);
 
   const addNew = () => {
     setBlockIds(ids => [...ids, lastBlockIdRef.current++]);
@@ -35,17 +35,17 @@ const App = () => {
 
 const CounterBlock = () => {
   const [value, setValue] = useState(0);
-  const timerRef = useRef(null);
+  const timerRef = useRef<number | undefined>();
 
   useEffect(() => {
-    timerRef.current = setInterval(setValue, 1000, v => v + 1);
+    timerRef.current = window.setInterval(() => setValue(v => v + 1), 1000);
 
     return () => {
-      clearInterval(timerRef.current);
+      window.clearInterval(timerRef.current);
     };
   }, []);
 
   return <div className="block">{value}</div>;
 };
 
-ReactDom.render(<App />, document.getElementById("app"));
+ReactDom.render(<App />, document.getElementById('app'));

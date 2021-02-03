@@ -1,6 +1,6 @@
-import React from "react";
-import ReactDom from "react-dom";
-import "./styles.css";
+import React from 'react';
+import ReactDom from 'react-dom';
+import './styles.css';
 
 /**
     Сделай так, чтобы в приложении все классы заменились на функциональные компоненты, для этого используй Hooks
@@ -11,10 +11,15 @@ import "./styles.css";
     Список хуков, которые могут пригодиться: useState, useRef, useEffect
  */
 
-class App extends React.Component {
-  constructor(props) {
+type AppState = {
+  blockIds: number[];
+};
+
+class App extends React.Component<{}, AppState> {
+  private lastBlockId = 0;
+
+  constructor(props: {}) {
     super(props);
-    this.lastBlockId = 0;
     this.state = {
       blockIds: []
     };
@@ -37,11 +42,7 @@ class App extends React.Component {
     return (
       <div className="page">
         <div className="controlPanel">
-          <button
-            type="button"
-            onClick={this.removeLast}
-            className="actionButton"
-          >
+          <button type="button" onClick={this.removeLast} className="actionButton">
             -
           </button>
           <button type="button" onClick={this.addNew} className="actionButton">
@@ -58,8 +59,14 @@ class App extends React.Component {
   }
 }
 
-class CounterBlock extends React.Component {
-  constructor(props) {
+type CounterBlockProps = {
+  value: number;
+};
+
+class CounterBlock extends React.Component<{}, CounterBlockProps> {
+  private timer?: number;
+
+  constructor(props: {}) {
     super(props);
     this.state = {
       value: 0
@@ -67,13 +74,13 @@ class CounterBlock extends React.Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => {
+    this.timer = window.setInterval(() => {
       this.setState({ value: this.state.value + 1 });
     }, 1000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    window.clearInterval(this.timer);
   }
 
   render() {
@@ -81,4 +88,4 @@ class CounterBlock extends React.Component {
   }
 }
 
-ReactDom.render(<App />, document.getElementById("app"));
+ReactDom.render(<App />, document.getElementById('app'));
