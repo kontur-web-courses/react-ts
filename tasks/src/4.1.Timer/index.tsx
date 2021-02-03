@@ -10,9 +10,13 @@ import './styles.css';
        Убедись, что если компонент скрыть кнопкой, то в консоль не будут писаться тики.
  */
 
-class Timer extends React.Component {
-  constructor() {
-    super();
+type TimerState = {
+  timeVisible: boolean;
+};
+
+class Timer extends React.Component<{}, TimerState> {
+  constructor(props: {}) {
+    super(props);
     this.state = { timeVisible: true };
   }
 
@@ -34,18 +38,20 @@ class Timer extends React.Component {
   }
 }
 
-class TimeDisplay extends React.Component {
-  constructor() {
-    super();
+type TimeDisplayState = {
+  localTime: Date;
+};
+
+class TimeDisplay extends React.Component<{}, TimeDisplayState> {
+  constructor(props: {}) {
+    super(props);
     this.state = {
       localTime: new Date()
     };
   }
 
   render() {
-    return (
-      <div className="time">{this.state.localTime.toLocaleTimeString()}</div>
-    );
+    return <div className="time">{this.state.localTime.toLocaleTimeString()}</div>;
   }
 }
 
@@ -56,9 +62,9 @@ ReactDom.render(<Timer />, document.getElementById('app'));
     - Функция setInterval регистрирует обработчик handler,
       который будет вызываться не чаще, чем в заданное количество миллисекунд.
       Оформляется так:
-          const intervalId = setInterval(handler, intervalInMilliseconds);
+          const intervalId = window.setInterval(handler, intervalInMilliseconds);
     - intervalId можно передать в функцию clearInterval, чтобы остановить вызов обработчика:
-          clearInterval(intervalId);
+          window.clearInterval(intervalId);
     - this.setState({property: value}) обновляет часть состояния и инициирует перерисовку.
     - componentDidMount вызывается сразу после того, как компонент размещен на странице.
       В нем можно делать запросы на получение данных или подписываться на события.

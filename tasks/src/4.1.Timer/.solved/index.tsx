@@ -2,9 +2,13 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import '../styles.css';
 
-class Timer extends React.Component {
-  constructor() {
-    super();
+type TimerState = {
+  timeVisible: boolean;
+};
+
+class Timer extends React.Component<{}, TimerState> {
+  constructor(props: {}) {
+    super(props);
     this.state = { timeVisible: true };
   }
 
@@ -26,17 +30,22 @@ class Timer extends React.Component {
   }
 }
 
-class TimeDisplay extends React.Component {
-  constructor() {
-    super();
+type TimeDisplayState = {
+  localTime: Date;
+};
+
+class TimeDisplay extends React.Component<{}, TimeDisplayState> {
+  private localTickInterval: number | null = null;
+
+  constructor(props: {}) {
+    super(props);
     this.state = {
       localTime: new Date()
     };
-    this.localTickInterval = null;
   }
 
   componentDidMount() {
-    this.localTickInterval = setInterval(() => {
+    this.localTickInterval = window.setInterval(() => {
       console.log('tick');
       this.setState({
         localTime: new Date()
@@ -46,15 +55,13 @@ class TimeDisplay extends React.Component {
 
   componentWillUnmount() {
     if (this.localTickInterval) {
-      clearInterval(this.localTickInterval);
+      window.clearInterval(this.localTickInterval);
       this.localTickInterval = null;
     }
   }
 
   render() {
-    return (
-      <div className="time">{this.state.localTime.toLocaleTimeString()}</div>
-    );
+    return <div className="time">{this.state.localTime.toLocaleTimeString()}</div>;
   }
 }
 
