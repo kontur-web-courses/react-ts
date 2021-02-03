@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import '../styles.css';
 
-class InputFormRow extends React.Component {
-  constructor(props) {
+type InputFormRowProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+};
+
+class InputFormRow extends React.Component<InputFormRowProps> {
+  private inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+
+  constructor(props: InputFormRowProps) {
     super(props);
-    this.inputRef = React.createRef();
   }
 
   render() {
@@ -20,13 +24,9 @@ class InputFormRow extends React.Component {
   }
 
   handleClick = () => {
-    this.inputRef.current.focus();
+    this.inputRef.current?.focus?.();
   };
 }
-
-InputFormRow.propTypes = {
-  label: PropTypes.string.isRequired
-};
 
 ReactDom.render(
   <div className="form">
