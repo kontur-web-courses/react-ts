@@ -8,13 +8,12 @@ var tasks = [
   { order: '3.1', id: 'ExtractComponent' },
   { order: '3.2', id: 'Toggle' },
   { order: '3.3', id: 'MoneyConverter' },
-  { order: '4.1', id: 'Timer' },
-  { order: '4.2', id: 'CreditCardInput' },
+  { order: '4', id: 'Timer' },
   { order: '5', id: 'Focus' },
   { order: '6', id: 'Hooks' },
   { order: '7', id: 'UsersTable' },
   { order: '8', id: 'FormRow' },
-  { order: '9', id: 'ColorsOfTime' },
+  { order: '9', id: 'ColorsOfTime' }
 ];
 
 if (typeof exports !== 'undefined') {
