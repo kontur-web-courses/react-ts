@@ -9,7 +9,7 @@ import Toggle from './Toggle';
     InputFormRow — штука классная, но поддерживает только обычные input.
     В новой форме понадобилось поддержать самописный Toggle — пришлось написать ToggleFormRow.
     Получилось много дублирующегося кода и это грустно :(
-    
+
     На помощь могут прийти Higher Order Components (HOC) — функции вида Component → Component.
     Используя HOC, можно создавать новые улучшенные компоненты из обычных:
         const EnhancedComponent = enhance(JustComponent); // enhance — это HOC
@@ -21,7 +21,7 @@ import Toggle from './Toggle';
           const InputFormRow = createFormRow(Input);
           const ToggleFormRow = createFormRow(Toggle);
        В качестве примера используй HOC из enhance.js.
-    
+
     2. Используй createFormRow, удалив старые реализации InputFormRow, ToggleFormRow.
 
     3. Открой React в Developer Tools в Chrome и убедись,
@@ -64,12 +64,7 @@ class Form extends React.Component {
   renderOpenButton() {
     return (
       <div className="openContainer">
-        <input
-          type="button"
-          className="actionButton"
-          value="Показать форму"
-          onClick={this.handleOpen}
-        />
+        <input type="button" className="actionButton" value="Показать форму" onClick={this.handleOpen} />
       </div>
     );
   }
@@ -92,12 +87,7 @@ class Form extends React.Component {
           <ToggleFormRow label="Вегетарианец" />
         </form>
         <div className="saveContainer">
-          <input
-            type="submit"
-            className="actionButton"
-            value="Сохранить"
-            onClick={this.handleSave}
-          />
+          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
         </div>
       </div>
     );

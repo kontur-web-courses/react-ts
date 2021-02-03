@@ -91,9 +91,7 @@ class Middle extends React.PureComponent {
     return (
       <div className="block">
         <ThemeContext.Consumer>
-          {theme => (
-            <Card title="Цветное локальное" color={theme.foregroundColor} />
-          )}
+          {theme => <Card title="Цветное локальное" color={theme.foregroundColor} />}
         </ThemeContext.Consumer>
       </div>
     );
@@ -107,20 +105,10 @@ class Bottom extends React.PureComponent {
     return (
       <div className="block">
         <ChangeThemeContext.Consumer>
-          {dispatchChangeTheme => (
-            <ThemedButton
-              value="← цвет"
-              onClick={() => dispatchChangeTheme('prev')}
-            />
-          )}
+          {dispatchChangeTheme => <ThemedButton value="← цвет" onClick={() => dispatchChangeTheme('prev')} />}
         </ChangeThemeContext.Consumer>
         <ChangeThemeContext.Consumer>
-          {dispatchChangeTheme => (
-            <ThemedButton
-              value="цвет →"
-              onClick={() => dispatchChangeTheme('next')}
-            />
-          )}
+          {dispatchChangeTheme => <ThemedButton value="цвет →" onClick={() => dispatchChangeTheme('next')} />}
         </ChangeThemeContext.Consumer>
       </div>
     );
@@ -139,14 +127,7 @@ class Card extends React.Component {
         <div>
           <CurrentTimeContext.Consumer>
             {currentTime => (
-              <TimeDisplay
-                time={
-                  timezone
-                    ? helpers.toTimezone(currentTime, timezone)
-                    : currentTime
-                }
-                color={color}
-              />
+              <TimeDisplay time={timezone ? helpers.toTimezone(currentTime, timezone) : currentTime} color={color} />
             )}
           </CurrentTimeContext.Consumer>
         </div>

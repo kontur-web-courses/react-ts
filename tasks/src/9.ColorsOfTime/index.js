@@ -18,7 +18,7 @@ import Timer from './Timer';
     2. Убедись, что render в Card вызывается при использовании кнопок смены цвета.
     3. Почему render в Top вызывается каждую секунду, если Top — это PureComponent у которого в props нет currentTime?
     4. Подумай, что нужно сделать, чтобы перенести карточку Нью-Йорка в блок Top, а кнопки смены цвета в блок Bottom.
-    
+
     Отрефактори код по шагам:
     1. Создай CurrentTimeContext.
     2. В компоненте ColorsOfTime в методе render оберни <div className="page">...</div> в CurrentTimeContext.Provider,
@@ -129,11 +129,7 @@ class Middle extends React.PureComponent {
     const { currentTime, theme } = this.props;
     return (
       <div className="block">
-        <Card
-          title="Цветное локальное"
-          currentTime={currentTime}
-          color={theme.foregroundColor}
-        />
+        <Card title="Цветное локальное" currentTime={currentTime} color={theme.foregroundColor} />
         <Card title="Серый Лондон" timezone={+0} currentTime={currentTime} />
       </div>
     );
@@ -150,24 +146,9 @@ class Bottom extends React.PureComponent {
     const { currentTime } = this.props;
     return (
       <div className="block">
-        <Card
-          title="Синий Нью-Йорк"
-          timezone={-4}
-          currentTime={currentTime}
-          color="blue"
-        />
-        <Card
-          title="Зеленый Париж"
-          timezone={+2}
-          currentTime={currentTime}
-          color="green"
-        />
-        <Card
-          title="Красный Пекин"
-          timezone={+8}
-          currentTime={currentTime}
-          color="red"
-        />
+        <Card title="Синий Нью-Йорк" timezone={-4} currentTime={currentTime} color="blue" />
+        <Card title="Зеленый Париж" timezone={+2} currentTime={currentTime} color="green" />
+        <Card title="Красный Пекин" timezone={+8} currentTime={currentTime} color="red" />
       </div>
     );
   }
@@ -185,12 +166,7 @@ class Card extends React.PureComponent {
       <div className="card">
         <h3>{title}</h3>
         <div>
-          <TimeDisplay
-            time={
-              timezone ? helpers.toTimezone(currentTime, timezone) : currentTime
-            }
-            color={color}
-          />
+          <TimeDisplay time={timezone ? helpers.toTimezone(currentTime, timezone) : currentTime} color={color} />
         </div>
       </div>
     );

@@ -63,21 +63,13 @@ class Users extends React.Component {
       return (
         <div className="root">
           <EditUserForm user={editingUser} onSave={this.handleSaveUser} />
-          <UserTable
-            users={users}
-            onEditUser={this.handleEditUser}
-            onAddUser={this.handleAddUser}
-          />
+          <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
         </div>
       );
     }
     return (
       <div className="root">
-        <UserTable
-          users={users}
-          onEditUser={this.handleEditUser}
-          onAddUser={this.handleAddUser}
-        />
+        <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
       </div>
     );
   }
@@ -127,12 +119,7 @@ class UserTable extends React.Component {
               <th>Имя</th>
               <th>Возраст</th>
               <th>
-                <input
-                  type="submit"
-                  className="editButton"
-                  value="Добавить"
-                  onClick={onAddUser}
-                />
+                <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
               </th>
             </tr>
           </thead>
@@ -171,12 +158,7 @@ class UserTableRow extends React.Component {
         <td>{user.firstName}</td>
         <td>{helpers.calculateAge(user.dateOfBirth)}</td>
         <td>
-          <input
-            className="editButton"
-            type="button"
-            onClick={this.handleEditUser}
-            value="Изменить"
-          />
+          <input className="editButton" type="button" onClick={this.handleEditUser} value="Изменить" />
         </td>
       </tr>
     );
@@ -206,7 +188,7 @@ ReactDom.render(<Users />, document.getElementById('app'));
       Если span не нужен, то вместо него встанет невидимый false-узел, а div останется на своем месте.
 
     - Изменение setState в компоненте приводит к его перерисовке. Часто вместе с детьми.
-      Но если дочерний компонент наследует PureComponent, то он не будет перерисован 
+      Но если дочерний компонент наследует PureComponent, то он не будет перерисован
       если его props не поменялись. Это можно использовать для оптимизации рендеринга
 
     - Ключ к производительности — в правильном задании key.

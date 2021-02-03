@@ -28,8 +28,7 @@ function enhance(WrappedComponent) {
 
   // Заданное displayName делает отладку удобнее.
   // В частности, это имя будет отображаться в Chrome Developer Tools на вкладке React.
-  const wrappedName =
-    WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
   Enhanced.displayName = `Enhanced(${wrappedName})`;
 
   //Этот компонент-обертка возвращается в качестве результата работы HOC.

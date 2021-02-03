@@ -36,9 +36,7 @@ export default class EditUserForm extends React.Component {
             <input
               type="text"
               value={user.firstName || ''}
-              onChange={e =>
-                this.handleUserChange({ firstName: e.target.value })
-              }
+              onChange={e => this.handleUserChange({ firstName: e.target.value })}
             />
           </div>
           <div className="row">
@@ -46,9 +44,7 @@ export default class EditUserForm extends React.Component {
             <input
               type="text"
               value={user.patronymic || ''}
-              onChange={e =>
-                this.handleUserChange({ patronymic: e.target.value })
-              }
+              onChange={e => this.handleUserChange({ patronymic: e.target.value })}
             />
           </div>
           <div className="row">
@@ -56,9 +52,7 @@ export default class EditUserForm extends React.Component {
             <input
               type="date"
               value={helpers.formatDate(user.dateOfBirth)}
-              onChange={e =>
-                this.handleUserChange({ dateOfBirth: new Date(e.target.value) })
-              }
+              onChange={e => this.handleUserChange({ dateOfBirth: new Date(e.target.value) })}
             />
           </div>
           <div className="row">
@@ -66,9 +60,7 @@ export default class EditUserForm extends React.Component {
             <input
               type="checkbox"
               checked={user.isVegetarian || false}
-              onChange={e =>
-                this.handleUserChange({ isVegetarian: e.target.checked })
-              }
+              onChange={e => this.handleUserChange({ isVegetarian: e.target.checked })}
             />
           </div>
           <div className="row">
@@ -81,12 +73,7 @@ export default class EditUserForm extends React.Component {
           </div>
         </form>
         <div className="saveContainer">
-          <input
-            type="submit"
-            className="actionButton"
-            value="Сохранить"
-            onClick={this.handleSave}
-          />
+          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
         </div>
       </div>
     );

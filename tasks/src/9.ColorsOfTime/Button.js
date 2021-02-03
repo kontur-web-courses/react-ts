@@ -6,8 +6,7 @@ import './styles.css';
 export default function Button({ value, theme, onClick }) {
   return (
     <input
-      className={`button ${theme.backgroundColor ||
-        ''} ${theme.foregroundColor || ''}`}
+      className={`button ${theme.backgroundColor || ''} ${theme.foregroundColor || ''}`}
       type="button"
       value={value}
       onClick={onClick}

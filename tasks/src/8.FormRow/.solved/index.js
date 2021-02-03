@@ -26,8 +26,7 @@ function createFormRow(WrappedComponent) {
     forwardedRef: PropTypes.object
   };
 
-  const wrappedName =
-    WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
   FormRow.displayName = `FormRow(${wrappedName})`;
 
   const forward = (props, ref) => <FormRow {...props} forwardedRef={ref} />;
@@ -62,12 +61,7 @@ class Form extends React.Component {
   renderOpenButton() {
     return (
       <div className="openContainer">
-        <input
-          type="button"
-          className="actionButton"
-          value="Открыть"
-          onClick={this.handleOpen}
-        />
+        <input type="button" className="actionButton" value="Открыть" onClick={this.handleOpen} />
       </div>
     );
   }
@@ -90,12 +84,7 @@ class Form extends React.Component {
           <ToggleFormRow label="Вегетарианец" />
         </form>
         <div className="saveContainer">
-          <input
-            type="submit"
-            className="actionButton"
-            value="Сохранить"
-            onClick={this.handleSave}
-          />
+          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
         </div>
       </div>
     );

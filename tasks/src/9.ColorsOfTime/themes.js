@@ -48,16 +48,11 @@ export const Consumer = Context.Consumer;
 export function withTheme(WrappedComponent) {
   class Themed extends React.Component {
     render() {
-      return (
-        <Context.Consumer>
-          {theme => <WrappedComponent theme={theme} {...this.props} />}
-        </Context.Consumer>
-      );
+      return <Context.Consumer>{theme => <WrappedComponent theme={theme} {...this.props} />}</Context.Consumer>;
     }
   }
 
-  const wrappedName =
-    WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
   Themed.displayName = `withTheme(${wrappedName})`;
 
   return Themed;

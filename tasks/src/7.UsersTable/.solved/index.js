@@ -45,14 +45,8 @@ class Users extends React.Component {
     const { users, editingUser } = this.state;
     return (
       <div className="root">
-        {editingUser && (
-          <EditUserForm user={editingUser} onSave={this.handleSaveUser} />
-        )}
-        <UserTable
-          users={users}
-          onEditUser={this.handleEditUser}
-          onAddUser={this.handleAddUser}
-        />
+        {editingUser && <EditUserForm user={editingUser} onSave={this.handleSaveUser} />}
+        <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
       </div>
     );
   }
@@ -102,12 +96,7 @@ class UserTable extends React.PureComponent {
               <th>Имя</th>
               <th>Возраст</th>
               <th>
-                <input
-                  type="submit"
-                  className="editButton"
-                  value="Добавить"
-                  onClick={onAddUser}
-                />
+                <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
               </th>
             </tr>
           </thead>
@@ -147,8 +136,7 @@ class UserTableRow extends React.Component {
       prevUser.surname !== nextUser.surname ||
       prevUser.surname !== nextUser.surname ||
       (prevUser.dateOfBirth !== nextUser.dateOfBirth &&
-        helpers.calculateAge(prevUser.dateOfBirth) !==
-          helpers.calculateAge(nextUser.dateOfBirth))
+        helpers.calculateAge(prevUser.dateOfBirth) !== helpers.calculateAge(nextUser.dateOfBirth))
     );
   }
 
@@ -161,12 +149,7 @@ class UserTableRow extends React.Component {
         <td>{user.firstName}</td>
         <td>{helpers.calculateAge(user.dateOfBirth)}</td>
         <td>
-          <input
-            className="editButton"
-            type="button"
-            onClick={this.handleEditUser}
-            value="Изменить"
-          />
+          <input className="editButton" type="button" onClick={this.handleEditUser} value="Изменить" />
         </td>
       </tr>
     );
