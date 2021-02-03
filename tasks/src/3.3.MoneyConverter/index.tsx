@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import './styles.css';
 
 /**
@@ -30,8 +29,14 @@ class MoneyConverter extends React.Component {
   }
 }
 
-class Money extends React.Component {
-  constructor(props) {
+type MoneyProps = {};
+
+type MoneyState = {
+  value: number;
+};
+
+class Money extends React.Component<MoneyProps, MoneyState> {
+  constructor(props: MoneyProps) {
     super(props);
     this.state = {
       value: 0
@@ -39,27 +44,19 @@ class Money extends React.Component {
   }
 
   render() {
-    return (
-      <input
-        type="text"
-        value={this.state.value}
-        onChange={this.handleChangeValue}
-      />
-    );
+    return <input type="text" value={this.state.value} onChange={this.handleChangeValue} />;
   }
 
-  handleChangeValue = event => {
+  handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = extractNumberString(event.target.value);
     this.setState({ value });
   };
 }
 
-Money.propTypes = {};
-
-function extractNumberString(value) {
-  const str = value.replace(/^0+/g, '').replace(/[^\.0-9]/g, '');
+function extractNumberString(value: string): number {
+  const str = value.replace(/^0+/g, '').replace(/[^.0-9]/g, '');
   const parts = str.split('.');
-  return parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : str;
+  return Number(parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : str);
 }
 
 ReactDom.render(<MoneyConverter />, document.getElementById('app'));

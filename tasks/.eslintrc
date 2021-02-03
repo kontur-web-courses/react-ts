@@ -19,8 +19,10 @@
     "no-unused-vars": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-empty-function": "warn",
     "prettier/prettier": "warn",
-    "prefer-const": "warn"
+    "prefer-const": "warn",
+    "react/prop-types": "off"
   },
   "env": {
     "browser": true,

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import './styles.css';
 import './toggle.css';
 
@@ -10,17 +9,20 @@ import './toggle.css';
     а при изменении передается наружу через onChange.
  */
 
-class Toggle extends React.Component {
-  // constructor(props) {
+type ToggleProps = {
+  onChange(value: boolean): void;
+};
+
+type ToggleState = {};
+
+class Toggle extends React.Component<ToggleProps, ToggleState> {
+  // constructor(props: ToggleProps) {
   // }
 
   render() {
     const checked = true;
     return (
-      <span
-        className={'container' + (checked ? ' isChecked' : '')}
-        onClick={this.handleClick}
-      >
+      <span className={'container' + (checked ? ' isChecked' : '')} onClick={this.handleClick}>
         <span className="handle">
           <div className="bg" />
           <span className="hinge" />
@@ -32,14 +34,9 @@ class Toggle extends React.Component {
   handleClick = () => {};
 }
 
-Toggle.propTypes = {
-  onChange: PropTypes.func
-};
-
 ReactDom.render(
   <div className="page">
-    <Toggle onChange={value => console.log(value)} /> Использовать умные
-    компоненты
+    <Toggle onChange={value => console.log(value)} /> Использовать умные компоненты
   </div>,
   document.getElementById('app')
 );
