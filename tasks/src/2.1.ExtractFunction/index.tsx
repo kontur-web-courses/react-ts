@@ -27,9 +27,7 @@ ReactDom.render(
           <br />
           <span className="postTime">3 часа назад</span>
         </div>
-        <div className="postMessage">
-          Можно использовать для выпекания чизкейков :)
-        </div>
+        <div className="postMessage">Можно использовать для выпекания чизкейков :)</div>
       </div>
     </div>
   </div>,

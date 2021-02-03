@@ -5,13 +5,19 @@ import './styles.css';
 /**
      1. Разбери ручные переборы массивов в верстке.
         Для постов используй map без циклов, для авторов цикл for без map.
-    
+
      2. Посмотри ошибки в Chrome DevTools: React должен требовать наличия атрибутов key.
         Добавь в post поле id и присвой каждому полю уникальный строковый идентификатор.
         Используй id в качестве значения key в основном тэге поста и основном тэге автора.
  */
 
-const posts = [
+type Post = {
+  author: string;
+  time: string;
+  message: string;
+};
+
+const posts: Post[] = [
   {
     author: 'Парень не промах',
     time: '2 часа назад',
@@ -29,7 +35,7 @@ const posts = [
   }
 ];
 
-function renderPost(post) {
+function renderPost(post: Post) {
   return (
     <div className="post">
       <div className="postHeader">
@@ -42,7 +48,7 @@ function renderPost(post) {
   );
 }
 
-function renderAuthors(posts) {
+function renderAuthors(posts: Post[]) {
   return (
     <div className="authors">
       <span>{posts[0].author}</span>

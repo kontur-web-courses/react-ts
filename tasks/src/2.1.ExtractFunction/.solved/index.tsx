@@ -11,7 +11,7 @@ function renderLot() {
   );
 }
 
-function renderPost(author, time, message) {
+function renderPost(author: string, time: string, message: string) {
   return (
     <div className="post">
       <div className="postHeader">
@@ -28,16 +28,8 @@ ReactDom.render(
   <div className="page">
     {renderLot()}
     <div className="posts">
-      {renderPost(
-        'Парень не промах',
-        '2 часа назад',
-        'Попробую с удовольствием ;)'
-      )}
-      {renderPost(
-        'Милая девушка',
-        '3 часа назад',
-        'Можно использовать для выпекания чизкейков :)'
-      )}
+      {renderPost('Парень не промах', '2 часа назад', 'Попробую с удовольствием ;)')}
+      {renderPost('Милая девушка', '3 часа назад', 'Можно использовать для выпекания чизкейков :)')}
     </div>
   </div>,
   document.getElementById('app')

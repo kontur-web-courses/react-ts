@@ -2,7 +2,14 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import '../styles.css';
 
-const posts = [
+type Post = {
+  id: string;
+  author: string;
+  time: string;
+  message: string;
+};
+
+const posts: Post[] = [
   {
     id: '1',
     author: 'Парень не промах',
@@ -23,7 +30,7 @@ const posts = [
   }
 ];
 
-function renderPost(post) {
+function renderPost(post: Post) {
   return (
     <div key={post.id} className="post">
       <div className="postHeader">
@@ -36,7 +43,7 @@ function renderPost(post) {
   );
 }
 
-function renderAuthors(posts) {
+function renderAuthors(posts: Post[]) {
   const authors = [];
   for (const post of posts) {
     authors.push(<span key={post.id}>{post.author}</span>);

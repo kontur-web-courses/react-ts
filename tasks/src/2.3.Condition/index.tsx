@@ -15,13 +15,13 @@ import './styles.css';
     4. Если у лота нет тэгов, то div с классом lotTags должен отсутствовать
  */
 
-function renderPosts(posts) {
+function renderPosts(posts: string[]) {
   //<div className="emptyPosts">Нет откликов</div>
   //<div className="singlePost">Единственный отклик</div>
   return <div className="posts">Отклики в количестве {posts.length}</div>;
 }
 
-function renderLot(name, description, tags) {
+function renderLot(name: string, description: string | undefined, tags: string[]) {
   return (
     <div className="lot">
       <div className="lotName">{name}</div>
@@ -31,25 +31,25 @@ function renderLot(name, description, tags) {
   );
 }
 
-function renderTags(tags) {
+function renderTags(tags: string[]) {
   const content = tags.join(', ');
   return <div className="lotTags">{content}</div>;
 }
 
 ReactDom.render(
   <div>
-      <div className="page">
-          {renderLot('', 'красный, красивый, твой!', [])}
-          {renderPosts([])}
-      </div>
-      <div className="page">
-          {renderLot('Пирожок с капустой', undefined, ['#свежий', '#ручнаяРабота'])}
-          {renderPosts(['Тут ровно один отклик'])}
-      </div>
-      <div className="page">
-          {renderLot('', '', ['#большой', '#Яркий'])}
-          {renderPosts(['Класс!', 'Хочу еще!', 'Отстой'])}
-      </div>
+    <div className="page">
+      {renderLot('', 'красный, красивый, твой!', [])}
+      {renderPosts([])}
+    </div>
+    <div className="page">
+      {renderLot('Пирожок с капустой', undefined, ['#свежий', '#ручнаяРабота'])}
+      {renderPosts(['Тут ровно один отклик'])}
+    </div>
+    <div className="page">
+      {renderLot('', '', ['#большой', '#Яркий'])}
+      {renderPosts(['Класс!', 'Хочу еще!', 'Отстой'])}
+    </div>
   </div>,
   document.getElementById('app')
 );
