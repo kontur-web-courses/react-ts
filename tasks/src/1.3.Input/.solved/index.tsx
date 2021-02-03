@@ -13,7 +13,7 @@ ReactDom.render(
       <input
         id="name"
         type="text"
-        size="39"
+        size={39}
         onChange={event => {
           userName = event.target.value;
         }}

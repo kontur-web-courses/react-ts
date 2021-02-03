@@ -17,7 +17,7 @@ let mydom = (
       <input
         id="name"
         type="text"
-        size="39"
+        size={39}
         onChange={event => {
           const target = event.target;
           debugger;
