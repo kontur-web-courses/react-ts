@@ -238,7 +238,7 @@ React-обертки для встроенного в HTML
 
 ***
 
-### Вставка JS-значений в верстку
+### Вставка вычисляемых значений в верстку
 
 <pre><code class="lang-html hljs">&lt;div&gt;{Math.round(1000/3)}&lt;/div&gt;</code></pre>
 
@@ -548,7 +548,7 @@ The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
 ### Скрыть элемент
 
 ```js
-function WarningBanner(props) {
+function WarningBanner<Props>(props) {
   if (!props.warn) {
     return null;
   }
@@ -604,7 +604,7 @@ function WarningBanner(props) {
 ### Функциональные компоненты
 
 ```js
-function MyComponent(props) {
+function MyComponent(props: Props) {
   return (
       <div>{props.a} {props.b}</div>
   );
@@ -620,7 +620,7 @@ Properties — входные значения компонента
 ### Деструктуризация props
 
 ```js
-function MyComponent({a, b}) {
+function MyComponent({a, b}): React.FC<Props> {
   return (
       <div>{a} {b}</div>
   );
@@ -632,7 +632,7 @@ function MyComponent({a, b}) {
 ### Children
 
 ```js
-function Parent(props) {
+function Parent(props): React.FC<Props> {
   return (<div className="green">{props.children}</div>);
 }
 ```
@@ -647,15 +647,21 @@ MyComponent.defaultProps = {
 }
 ```
 
+```js
+const MyFunctionalComponent: React.FC<Props> = (b = 'default value') => {
+  ...
+}
+```
+
 ***
 
-### PropTypes
+### Типизация Props
 
-```js
-MyComponent.propTypes = {
-  a: PropTypes.number.isRequired,
-  b: PropTypes.string,
-  onFire: PropTypes.func
+```ts
+interface Props {
+  a: number
+  b?: string
+  onFire?: () => void
 }
 ```
 
@@ -668,8 +674,8 @@ MyComponent.propTypes = {
 ### Классы-компоненты
 
 ```js
-class MyComponent extends React.Component {
-  constructor(props) {
+class MyComponent extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
   
@@ -688,8 +694,8 @@ class MyComponent extends React.Component {
 ### Компоненты с состоянием
 
 ```js
-class Counter extends React.Component {
-  constructor(props) {
+class Counter extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 	this.state = { value: props.defaultValue, checked: false };
   }
@@ -716,7 +722,7 @@ class Counter extends React.Component {
 handleClick = () => {
   // В state есть value и checked, но передаем мы одно — только оно и обновится
   this.setState({
-    value: this.state.value * this.props.step
+    value: this.state.value + this.props.step
   });
   // Здесь this.state.value еще имеет старое значение.
 }
@@ -1119,6 +1125,7 @@ function TimeDisplay() {
 
 - Никто не понимает, как работает ***this*** в js
 - Переиспользовать невизуальную логику при помощи создания своих хуков
+- Аггрегирование связанной логики в одном месте (напр. подписки и отписки)
 
 ***
 
@@ -1277,7 +1284,7 @@ function MyFunctionalComponent() {
 2. Установи в ней зависимости `npm i`
 3. Останови прошлый webpack-сервер, если он все еще запущен.
 4. Запусти новый сервер командой `npm start`
-5. В файле `src/index.js` описание задания
+5. В файле `src/index.tsx` описание задания
 
 
 ***
