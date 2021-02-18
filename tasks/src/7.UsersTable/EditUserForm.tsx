@@ -2,16 +2,17 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
 import * as helpers from './helpers';
+import { User } from './defaultUsers';
 
-export default class EditUserForm extends React.Component {
-  constructor() {
-    super();
+export default class EditUserForm extends React.Component<EditUserFormProps, EditUserFormState> {
+  constructor(props: EditUserFormProps) {
+    super(props);
     this.state = {
       user: {}
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps: EditUserFormProps, prevState: EditUserFormState) {
     if (nextProps.user && prevState.user !== nextProps.user && !prevState.changed) {
       return { user: nextProps.user };
     }
@@ -19,7 +20,7 @@ export default class EditUserForm extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user = {} } = this.state;
     return (
       <div className="form">
         <form onSubmit={this.handleSave}>
@@ -79,7 +80,7 @@ export default class EditUserForm extends React.Component {
     );
   }
 
-  handleUserChange = change => {
+  handleUserChange = (change: Partial<User>) => {
     this.setState({
       changed: true,
       user: { ...this.state.user, ...change }
@@ -87,11 +88,18 @@ export default class EditUserForm extends React.Component {
   };
 
   handleSave = () => {
-    this.props.onSave(this.state.user);
+    if (this.state.user) {
+      this.props.onSave(this.state.user as User);
+    }
   };
 }
 
-EditUserForm.propTypes = {
-  user: PropTypes.object,
-  onSave: PropTypes.func
-};
+interface EditUserFormProps {
+  user: User;
+  onSave: (user: User) => void;
+}
+
+interface EditUserFormState {
+  user?: Partial<User>;
+  changed?: boolean;
+}

@@ -1,4 +1,14 @@
-export default [
+export interface User {
+  id: number;
+  surname?: string;
+  firstName?: string;
+  patronymic?: string;
+  dateOfBirth?: Date;
+  isVegetarian?: boolean;
+  wishes?: string;
+}
+
+const defaultUsers: User[] = [
   {
     id: 0,
     surname: 'Иванов',
@@ -18,3 +28,5 @@ export default [
     wishes: 'Хочу сидеть рядом с Петей'
   }
 ];
+
+export default defaultUsers;

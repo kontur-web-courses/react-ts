@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import EditUserForm from './EditUserForm';
 import './styles.css';
 import * as helpers from './helpers';
-import defaultUsers from './defaultUsers';
+import defaultUsers, { User } from './defaultUsers';
 
 /**
     Есть таблица гостей и форма для добавления гостя. В таблице отображена только основная информация.
@@ -44,13 +43,13 @@ function updateGeneration() {
   generationEvents = 1;
 }
 
-function logEvent(msg) {
+function logEvent(msg: string) {
   console.log(` ${generation}.${generationEvents++}\t${msg}`);
 }
 
-class Users extends React.Component {
-  constructor() {
-    super();
+class Users extends React.Component<{}, UsersState> {
+  constructor(props: {}) {
+    super(props);
     this.state = {
       users: defaultUsers,
       editingUser: null
@@ -82,14 +81,14 @@ class Users extends React.Component {
     });
   };
 
-  handleEditUser = user => {
+  handleEditUser = (user: User) => {
     updateGeneration();
     this.setState({
       editingUser: user
     });
   };
 
-  handleSaveUser = user => {
+  handleSaveUser = (user: User) => {
     updateGeneration();
     this.setState({
       editingUser: null,
@@ -98,7 +97,12 @@ class Users extends React.Component {
   };
 }
 
-class UserTable extends React.Component {
+interface UsersState {
+  users: User[];
+  editingUser: User | null;
+}
+
+class UserTable extends React.Component<UserTableProps> {
   componentDidMount() {
     logEvent('UserTable\t\t did mount');
   }
@@ -134,13 +138,13 @@ class UserTable extends React.Component {
   }
 }
 
-UserTable.propTypes = {
-  users: PropTypes.array,
-  onEditUser: PropTypes.func,
-  onAddUser: PropTypes.func
-};
+interface UserTableProps {
+  users: User[];
+  onEditUser: (user: User) => void;
+  onAddUser: () => void;
+}
 
-class UserTableRow extends React.Component {
+class UserTableRow extends React.Component<UserTableRowProps> {
   componentDidMount() {
     logEvent('UserTableRow\t did mount with id=' + this.props.user.id);
   }
@@ -169,10 +173,10 @@ class UserTableRow extends React.Component {
   };
 }
 
-UserTableRow.propTypes = {
-  user: PropTypes.object,
-  onEditUser: PropTypes.func
-};
+interface UserTableRowProps {
+  user: User;
+  onEditUser: (user: User) => void;
+}
 
 ReactDom.render(<Users />, document.getElementById('app'));
 
