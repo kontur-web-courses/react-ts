@@ -1,3 +1,21 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.wrapper {
+    width: 400px;
+}
+
+.form-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.discr {
+    font-weight: 600;
+}
+
+
+
+

@@ -1,4 +1,7 @@
 import './style.css';
+import React from 'react';
+import ReactDom from 'react-dom';
+import { App } from "./App";
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -55,5 +58,9 @@ import './style.css';
  *      гражданство, национальность, номер телефона и адрес электронной почты.
  *      Придумай, как избежать излишнего дублирования.
  */
+
+const root = document.querySelector('#component')
+
+ReactDom.render(<App />, root);
 
 console.log('Hi from script!');
