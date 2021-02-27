@@ -1,16 +1,48 @@
 import './style.css';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDom from 'react-dom';
-import { Button, Input, Select, Gapped } from '@skbkontur/react-ui';
+import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
+
+function renderModal() {
+    return (
+        <Modal onClose={close}>
+            <Modal.Header>Пользователь сохранен</Modal.Header>
+            <Modal.Body></Modal.Body>
+            <Modal.Footer>
+                <Button onClick={close}>Закрыть</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+}
 
 const Form = () => {
+    const [modalState, setModalState] = useState(false);
     let cities = [Select.static(() => <Select.Item>Выберите город</Select.Item>), 'Екатеринбург', 'Москва', 'Омск', 'Суздаль'];
+
+    const close = () => {
+        setModalState(modalState => modalState = false);
+    }
+    const open = () => {
+        setModalState(modalState => modalState = true);
+    }
+
+    const renderModal = () => {
+        return (
+            <Modal onClose={close}>
+                <Modal.Header>Пользователь сохранен</Modal.Header>
+                <Modal.Footer>
+                    <Button onClick={close}>Закрыть</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
 
     return (
         <div className="userForm">
+            {modalState && renderModal()}
             <Gapped gap={15} vertical>
                 <h2>Информация о пользователе</h2>
-                <label className="userInfo"> 
+                <label className="userInfo">
                     Имя
                     <Input placeholder="Введите имя пользователя" />
                 </label>
@@ -20,9 +52,9 @@ const Form = () => {
                 </label>
                 <label className="userInfo">
                     Город
-                    <Select items={cities} placeholder="Выберите город" width="150px"/>
+                    <Select items={cities} placeholder="Выберите город" width="150px" />
                 </label>
-                <Button use="primary" size="large" >Сохранить</Button>
+                <Button use="primary" size="large" onClick={open}>Сохранить</Button>
             </Gapped>
         </div>
     );
@@ -85,5 +117,3 @@ ReactDom.render(<Form />, document.getElementById('app'));
  *      гражданство, национальность, номер телефона и адрес электронной почты.
  *      Придумай, как избежать излишнего дублирования.
  */
-
-console.log('Hi from script!');
