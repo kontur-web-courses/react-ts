@@ -1,3 +1,22 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.Form-container {
+    width: 500px;
+    margin: 0 auto;
+}
+.Form-header {
+    font-size: 25px;
+}
+.Form-group {
+    display: flex;
+}
+.Form-group .label {
+    display: block;
+    flex: 0 1 20%;
+}
+.Form-group:nth-child(2) {
+    display: block;
+    flex: 0 1 80%;
+}
