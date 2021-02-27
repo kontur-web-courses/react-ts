@@ -1,3 +1,12 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.userInfo {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+}
+
+.userForm {
+    margin: 10px;
+}

@@ -1,4 +1,34 @@
 import './style.css';
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Button, Input, Select, Gapped } from '@skbkontur/react-ui';
+
+const Form = () => {
+    let cities = [Select.static(() => <Select.Item>Выберите город</Select.Item>), 'Екатеринбург', 'Москва', 'Омск', 'Суздаль'];
+
+    return (
+        <div className="userForm">
+            <Gapped gap={15} vertical>
+                <h2>Информация о пользователе</h2>
+                <label className="userInfo"> 
+                    Имя
+                    <Input placeholder="Введите имя пользователя" />
+                </label>
+                <label className="userInfo">
+                    Фамилия
+                    <Input placeholder="Введите фамилию пользователя" />
+                </label>
+                <label className="userInfo">
+                    Город
+                    <Select items={cities} placeholder="Выберите город" width="150px"/>
+                </label>
+                <Button use="primary" size="large" >Сохранить</Button>
+            </Gapped>
+        </div>
+    );
+};
+
+ReactDom.render(<Form />, document.getElementById('app'));
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
