@@ -4,6 +4,7 @@ import { CustomModal } from "./CustomModal";
 
 //Екатеринбург не пришёл на фан встречу :(
 const cities = ["Липецк", "Троицк", "Новокузнецк", "Челябинск", "Владивосток"];
+const maritalStatuses = ["Замужем", "Не замужем"];
 
 type saveDataType = {
   name: string;
@@ -66,7 +67,7 @@ export const App: React.FC = () => {
 type form = {
   saveData: () => void;
   onChangeName: (e: string) => void; //попался в ловушку ивентов React.BaseSyntheticEvent<HTMLInputElement>
-  onChangeSurname: (e: string) => void;
+  onChangeSurname: (e: string) => void; //а если мне нужно не только свойство e.target.value?
   onCityChange: (e: string) => void;
 } & saveDataType
 

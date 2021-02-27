@@ -3,7 +3,7 @@ body {
 }
 
 .wrapper {
-    width: 400px;
+    width: 450px;
 }
 
 .form-label {
@@ -16,6 +16,66 @@ body {
     font-weight: 600;
 }
 
+.custom-input {
+    font-size: 14px;
+    line-height: 20px !important;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 34px;
+    border-radius: 0;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-clip: padding-box;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-top-color: rgba(0,0,0,0.28);
+    box-sizing: border-box;
+    color: inherit;
+    cursor: text;
+    outline: none;
+    position: relative;
+    width: 250px;
+}
 
+.empty-input {
+    animation: Empty-input-signal 1s ease-out 1;
 
+}
+
+@keyframes Empty-input-signal {
+    10% {
+        transform: translateX(-15px);
+    }
+    20% {
+        transform: translateX(15px);
+    }
+    30% {
+        transform: translateX(-15px);
+    }
+    40% {
+        transform: translateX(15px);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
+    60% {
+        transform: translateX(10px);
+    }
+    70% {
+        transform: translateX(-5px);
+    }
+    80% {
+        transform: translateX(5px);
+    }
+    90% {
+        transform: translateX(-1px);
+    }
+    100% {
+        transform: translateX(0px);
+    }
+}
 

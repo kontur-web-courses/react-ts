@@ -1,7 +1,7 @@
 import './style.css';
 import React from 'react';
 import ReactDom from 'react-dom';
-import { App } from "./App";
+import { App1 } from "./task8-9/App8-9";
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -61,6 +61,6 @@ import { App } from "./App";
 
 const root = document.querySelector('#component')
 
-ReactDom.render(<App />, root);
+ReactDom.render(<App1 />, root);
 
 console.log('Hi from script!');

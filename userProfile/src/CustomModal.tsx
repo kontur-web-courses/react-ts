@@ -1,27 +1,26 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { Button, Modal } from "@skbkontur/react-ui";
 import { prevCurrentData } from "./App";
-import { createLogger } from "fork-ts-checker-webpack-plugin/lib/logger/LoggerFactory";
+import { prevCurrentDataType } from "./task8-9/types";
+import { propArray } from "./task8-9/consts";
 
 type modal = {
   toggleModal: () => void;
-  diffData: prevCurrentData;
+  diffData: prevCurrentData | prevCurrentDataType;
 };
 
-const propArray: Array<string> = ["Имя", "Город", "Фамилия"];
-
 export const CustomModal: React.FC<modal> = ({ toggleModal, diffData: { prev, curr } }) => {
-
-  const checkTheDifferent = (): Array<React.FC> | null => {
+  const checkTheDifferent = (): JSX.Element | null => {
     const diffArray: Array<React.FC> = [];
     let counter: number = 0;
-    Object.keys(prev).forEach(key => {
+    Object.keys(prev).forEach((key, index) => {
+      // У меня много подобного
       // @ts-ignore // Вот встал вопрос, попробуй убрать тс игнор от сюда, как такого рода баг фиксить?) (в каком месте задавать тип)
       if (curr[key] !== prev[key] && prev[key]) {
         // @ts-ignore
-        diffArray.push(<Difference prop={propArray[counter]} prevName={prev[key]} currName={curr[key]} />);
-        counter++;
+        diffArray.push(<Difference key={key} prop={propArray[index]} prevName={prev[key]} currName={curr[key]} />);
       }
+      counter++;
     });
 
     if (!diffArray.length) {
