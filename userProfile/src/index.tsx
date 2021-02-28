@@ -62,7 +62,7 @@ const specificInputData: SpecificInputProps[] = [
 ];
 const CurrentStateContext = React.createContext<Partial<{ formState: FormState; changeFunction: any }>>({});
 const MyForm = () => {
-    const [isOpen, changeOpen] = useState(false);
+    const [isModalOpen, changeModalOpen] = useState(false);
     const [currentFormState, changeCurrentState] = useState<FormState>(getEmptyFormState());
     const [pastFormState, changePastState] = useState<FormState>(getNothingFormState());
     const [warningFirstNameAnimation, changeFirstNameAnimation] = useState(false);
@@ -71,9 +71,9 @@ const MyForm = () => {
     return (
         <ThemeContext.Provider value={FLAT_THEME}>
             <CurrentStateContext.Provider value={{ formState: currentFormState, changeFunction: changeCurrentState }}>
-                {isOpen && (
+                {isModalOpen && (
                     <MyModal
-                        close={changeOpen}
+                        changeOpenState={changeModalOpen}
                         pastState={pastFormState}
                         changePastState={changePastState}
                         currentState={currentFormState}
@@ -131,7 +131,7 @@ const MyForm = () => {
                                     noError = false;
                                 }
                                 if (noError) {
-                                    changeOpen(true);
+                                    changeModalOpen(true);
                                 }
                             }}
                         >
@@ -147,7 +147,7 @@ const MyForm = () => {
 const MyModal = (props?: any) => {
     const closeAction = () => {
         props.changePastState({ ...props.currentState });
-        props.close(false);
+        props.changeOpenState(false);
     };
 
     const diff = findDiff(props.currentState, props.pastState);
