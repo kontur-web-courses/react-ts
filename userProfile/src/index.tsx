@@ -1,4 +1,257 @@
 import './style.css';
+import React, { useState } from 'react';
+import ReactDom from 'react-dom';
+import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
+import { ThemeContext, FLAT_THEME } from '@skbkontur/react-ui';
+import { v4 as uuidv4 } from 'uuid';
+
+type FormState = {
+    firstName: string;
+    lastName: string;
+    city: string;
+    email: string;
+    birthDate: string;
+    birthCity: string;
+    maritalStatus: string;
+    citizenship: string;
+    nationality: string;
+    phoneNumber: string;
+    gender: string;
+    [index: string]: string;
+};
+
+function getEmptyFormState(): FormState {
+    return {
+        firstName: '',
+        lastName: '',
+        city: '',
+        email: '',
+        gender: '',
+        birthDate: '',
+        birthCity: '',
+        maritalStatus: '',
+        citizenship: '',
+        nationality: '',
+        phoneNumber: ''
+    };
+}
+function getNothingFormState(): FormState {
+    let state = getEmptyFormState();
+    Object.keys(state).map(key => {
+        state[key] = 'ничего';
+    });
+    return state;
+}
+
+function getSpecificInputPropsObject(
+    labelName: string,
+    inputPlaceHolder: string,
+    valueKey: string
+): SpecificInputProps {
+    return { labelName, inputPlaceHolder, valueKey };
+}
+
+const specificInputData: SpecificInputProps[] = [
+    getSpecificInputPropsObject('Почта', 'Введите почту пользователя', 'email'),
+    getSpecificInputPropsObject('Дата рождения', 'Введите дату рождения', 'birthDate'),
+    getSpecificInputPropsObject('Город рождения', 'Введите город рождения', 'birthCity'),
+    getSpecificInputPropsObject('Cемейное положение', 'Введите cемейное положение', 'maritalStatus'),
+    getSpecificInputPropsObject('Гражданство', 'Введите гражданство', 'citizenship'),
+    getSpecificInputPropsObject('Национальность', 'Введите национальность', 'nationality'),
+    getSpecificInputPropsObject('Номер телефона', 'Введите номер телефона', 'phoneNumber')
+];
+const CurrentStateContext = React.createContext<Partial<{ formState: FormState; changeFunction: any }>>({});
+const MyForm = () => {
+    const [isOpen, changeOpen] = useState(false);
+    const [currentFormState, changeCurrentState] = useState<FormState>(getEmptyFormState());
+    const [pastFormState, changePastState] = useState<FormState>(getNothingFormState());
+    const [warningFirstNameAnimation, changeFirstNameAnimation] = useState(false);
+    const [warningLastNameAnimation, changegLastNameAnimation] = useState(false);
+
+    return (
+        <ThemeContext.Provider value={FLAT_THEME}>
+            <CurrentStateContext.Provider value={{ formState: currentFormState, changeFunction: changeCurrentState }}>
+                {isOpen && (
+                    <MyModal
+                        close={changeOpen}
+                        pastState={pastFormState}
+                        changePastState={changePastState}
+                        currentState={currentFormState}
+                    />
+                )}
+                <form>
+                    <Gapped vertical>
+                        <h2>Информация о пользователе</h2>
+                        <WarningSpecificInput
+                            ChangeWarningFunction={changeFirstNameAnimation}
+                            warningState={warningFirstNameAnimation}
+                            labelName={'Имя'}
+                            inputPlaceHolder={'Введите имя пользователя'}
+                            valueKey={'firstName'}
+                        />
+                        <WarningSpecificInput
+                            ChangeWarningFunction={changegLastNameAnimation}
+                            warningState={warningLastNameAnimation}
+                            labelName={'Фамилия'}
+                            inputPlaceHolder={'Введите фамилию пользователя'}
+                            valueKey={'lastName'}
+                        />
+
+                        <SpecificSelect
+                            labelName={'Город'}
+                            itemSet={citySet}
+                            inputPlaceHolder={'Выберите город'}
+                            valueKey={'city'}
+                        />
+                        <SpecificSelect
+                            labelName={'Гендер'}
+                            itemSet={genderSet}
+                            inputPlaceHolder={'Выберите гендер'}
+                            valueKey={'gender'}
+                        />
+                        {specificInputData.map(data => (
+                            <SpecificInput
+                                labelName={data.labelName}
+                                inputPlaceHolder={data.inputPlaceHolder}
+                                valueKey={data.valueKey}
+                                key={data.valueKey}
+                            />
+                        ))}
+
+                        <Button
+                            use="primary"
+                            onClick={() => {
+                                let noError = true;
+                                if (currentFormState.firstName === '') {
+                                    changeFirstNameAnimation(!warningFirstNameAnimation);
+                                    noError = false;
+                                }
+                                if (currentFormState.lastName === '') {
+                                    changegLastNameAnimation(!warningLastNameAnimation);
+                                    noError = false;
+                                }
+                                if (noError) {
+                                    changeOpen(true);
+                                }
+                            }}
+                        >
+                            Сохранить
+                        </Button>
+                    </Gapped>
+                </form>
+            </CurrentStateContext.Provider>
+        </ThemeContext.Provider>
+    );
+};
+
+const MyModal = (props?: any) => {
+    const closeAction = () => {
+        props.changePastState({ ...props.currentState });
+        props.close(false);
+    };
+
+    const diff = findDiff(props.currentState, props.pastState);
+    return (
+        <Modal onClose={closeAction}>
+            <Modal.Header>Пользователь сохранен</Modal.Header>
+            <Modal.Body>
+                {diff.length > 0 ? <p>Измененные данные:</p> : <p>Изменений нет</p>}
+                {diff.map(item => (
+                    <p key={uuidv4()}>{item}</p>
+                ))}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={closeAction}>Закрыть</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+};
+
+type SpecificInputProps = {
+    labelName: string;
+    inputPlaceHolder: string;
+    valueKey: string;
+};
+
+const SpecificInput = (props: SpecificInputProps) => {
+    return (
+        <CurrentStateContext.Consumer>
+            {stateInfo => (
+                <label htmlFor="">
+                    <span className="label">{props.labelName}</span>
+                    <Input
+                        placeholder={props.inputPlaceHolder}
+                        onChange={e =>
+                            stateInfo.changeFunction({ ...stateInfo.formState, [props.valueKey]: e.target.value })
+                        }
+                    ></Input>
+                </label>
+            )}
+        </CurrentStateContext.Consumer>
+    );
+};
+
+type SpecificSelectProps = {
+    itemSet: string[];
+} & SpecificInputProps;
+
+const SpecificSelect = (props: SpecificSelectProps) => {
+    return (
+        <CurrentStateContext.Consumer>
+            {stateInfo => (
+                <label htmlFor="">
+                    <span className="label">{props.labelName}</span>
+                    <Select
+                        items={props.itemSet}
+                        placeholder={props.inputPlaceHolder}
+                        onValueChange={(e: any) =>
+                            stateInfo.changeFunction({ ...stateInfo.formState, [props.valueKey]: e })
+                        }
+                    ></Select>
+                </label>
+            )}
+        </CurrentStateContext.Consumer>
+    );
+};
+
+type WarningSpecificInputProps = {
+    ChangeWarningFunction: (e: any) => void;
+    warningState: boolean;
+} & SpecificInputProps;
+
+const WarningSpecificInput = (props: WarningSpecificInputProps) => {
+    return (
+        <CurrentStateContext.Consumer>
+            {stateInfo => (
+                <label
+                    htmlFor=""
+                    onAnimationEnd={() => props.ChangeWarningFunction(!props.warningState)}
+                    className={props.warningState ? 'shake' : ''}
+                >
+                    <span className="label">{props.labelName}</span>
+                    <Input
+                        placeholder={props.inputPlaceHolder}
+                        onChange={e =>
+                            stateInfo.changeFunction({ ...stateInfo.formState, [props.valueKey]: e.target.value })
+                        }
+                    ></Input>
+                </label>
+            )}
+        </CurrentStateContext.Consumer>
+    );
+};
+
+function findDiff(currentState: FormState, pastState: FormState) {
+    let diffArr = [];
+    for (const key in currentState) {
+        if (currentState[key] !== pastState[key])
+            diffArr.push(key + ': было ' + pastState[key] + ', стало ' + currentState[key]);
+    }
+    return diffArr;
+}
+
+const citySet = ['Екб', 'Москва', 'Санкт-Петербург'];
+const genderSet = ['М', 'Ж', 'Не определился'];
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -56,4 +309,4 @@ import './style.css';
  *      Придумай, как избежать излишнего дублирования.
  */
 
-console.log('Hi from script!');
+ReactDom.render(<MyForm />, document.getElementById('root'));
