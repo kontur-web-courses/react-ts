@@ -21,6 +21,7 @@ type CreateFormState = {
     isModalOpened: boolean;
     savedData: FormData;
     currentData: FormData;
+    fieldValidation: { name: boolean, surname: boolean };
 }
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
@@ -30,6 +31,10 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
             isModalOpened: false,
             savedData: {...defaultFormData},
             currentData: {...defaultFormData},
+            fieldValidation: {
+                name: false,
+                surname: false
+            }
         }
     }
 
@@ -38,7 +43,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
         const savedData = this.state.savedData;
 
         return (savedData[field] !== currentData[field] &&
-            <div>{field}: было {savedData[field]}, стало {currentData[field]}</div>);
+            <div>{field}: было {savedData[field] || 'неизвестно'}, стало {currentData[field]}</div>);
     }
 
     renderModal() {
@@ -61,17 +66,21 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
     }
 
     closeModalAndSaveData = () => {
-        this
-            .setState({
-                isModalOpened: false,
-                savedData: {...this.state.currentData}
-            });
+        this.setState({
+            isModalOpened: false,
+            savedData: {...this.state.currentData}
+        });
     }
 
     openModal = () => {
         this.setState({
             isModalOpened: true
         });
+    }
+
+    checkValidation = () => {
+        if (this.state.currentData.name && this.state.currentData.surname)
+            this.openModal();
     }
 
     changeFormData(value: string, field: string) {
@@ -96,6 +105,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
                                 id='name'
                                 placeholder='Введите имя пользователя'
                                 onValueChange={value => this.changeFormData(value, 'name')}
+                                error={this.state.currentData.name === '' && true}
                             />
                         </label>
                     </div>
@@ -107,6 +117,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
                                 id='surname'
                                 placeholder='Введите фамилию пользователя'
                                 onValueChange={value => this.changeFormData(value, 'surname')}
+                                error={this.state.currentData.surname === '' && true}
                             />
                         </label>
                     </div>
@@ -120,7 +131,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
                             />
                         </label>
                     </div>
-                    <Button use="primary" onClick={this.openModal}>Сохранить</Button>
+                    <Button use="primary" onClick={this.checkValidation}>Сохранить</Button>
                 </Gapped>
             </form>
         );
