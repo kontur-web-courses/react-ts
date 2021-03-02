@@ -1,5 +1,14 @@
 import './style.css';
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Form } from './components/Form';
 
+ReactDom.render(
+    <>
+        <Form />
+    </>,
+    document.getElementById('app')
+);
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
  *  чтобы оттуда что-то скопировать.
