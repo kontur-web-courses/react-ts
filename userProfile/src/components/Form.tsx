@@ -56,21 +56,19 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
     };
 
     const onSave = () => {
-        Object.keys(diffState).forEach(key => {
-            if (key === FormDataEnum.name) {
-                diffState.name.prevValue = diffState.name.value;
-                diffState.name.value = name;
-                diffState.name.hasChanged = diffState.name.prevValue !== diffState.name.value;
-            } else if (key === FormDataEnum.surname) {
-                diffState.surname.prevValue = diffState.surname.value;
-                diffState.surname.value = surname;
-                diffState.surname.hasChanged = diffState.surname.prevValue !== diffState.surname.value;
-            } else if (key === FormDataEnum.city) {
-                diffState.city.prevValue = diffState.city.value;
-                diffState.city.value = city;
-                diffState.city.hasChanged = diffState.city.prevValue !== diffState.city.value;
-            }
-        });
+        type diffStateKeyType = keyof typeof diffState;
+        for (let key in diffState) {
+            diffState[key as diffStateKeyType].prevValue = diffState[key as diffStateKeyType].value;
+            diffState[key as diffStateKeyType].value = name;
+        }
+
+        diffState.name.value = name;
+        diffState.surname.value = surname;
+        diffState.city.value = city;
+
+        for (let key in diffState) {
+            diffState[key as diffStateKeyType].hasChanged = diffState[key as diffStateKeyType].prevValue !== diffState[key as diffStateKeyType].value;
+        }
 
         saveForm(diffState);
     };
