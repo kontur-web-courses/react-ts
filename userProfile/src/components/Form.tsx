@@ -2,12 +2,29 @@ import React, { useState } from 'react';
 import { cities } from '../data/cities';
 import { Gapped, Input, Select } from "@skbkontur/react-ui";
 
+enum FormData {
+    name = 'name',
+    surname = 'surname',
+    city = 'city'
+}
 export const Form: React.FC = () => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [city, setCity] = useState('');
 
     const getCities = () => cities.map(city => city.title);
+
+    const onChangeValue = (fieldName: string) => {
+        return (value: string): void | undefined => {
+            if (fieldName === FormData.name) {
+                setName(value);
+            } else if (fieldName === FormData.surname) {
+                setSurname(value);
+            } else {
+                setCity(value);
+            }
+        };
+    };
 
     return (
         <form>
@@ -17,19 +34,24 @@ export const Form: React.FC = () => {
                     <label htmlFor="name" className="label">
                         Имя
                     </label>
-                    <Input id="name" type="text" value={name} />
+                    <Input id="name" type="text" value={name} onValueChange={onChangeValue(FormData.name)} />
                 </div>
                 <div>
                     <label htmlFor="surname" className="label">
                         Фамилия
                     </label>
-                    <Input id="surname" type="text" value={surname} />
+                    <Input id="surname" type="text" value={surname} onValueChange={onChangeValue(FormData.surname)} />
                 </div>
                 <div>
                     <label htmlFor="city" className="label">
                         Город
                     </label>
-                    <Select items={getCities()} value={city} placeholder={'Выберите город'} />
+                    <Select<string>
+                        items={getCities()}
+                        value={city}
+                        placeholder="Выберите город"
+                        onValueChange={onChangeValue(FormData.city)}
+                    />
                 </div>
             </Gapped>
         </form>
