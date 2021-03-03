@@ -1,6 +1,7 @@
 import React, { useReducer, useState } from 'react';
 import { cities } from '../data/cities';
 import { Gapped, Input, Select, Button } from '@skbkontur/react-ui';
+import { DiffFormState } from './Main';
 
 enum FormDataEnum {
     name = 'name',
@@ -8,14 +9,8 @@ enum FormDataEnum {
     city = 'city'
 }
 
-interface FormData {
-    name: string;
-    surname: string;
-    city: string;
-}
-
 interface FormPropTypes {
-    saveForm: (diffState: {}) => void;
+    saveForm: (diffState: DiffFormState) => void;
 }
 
 const diffState = {
@@ -41,9 +36,9 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
     const [surname, setSurname] = useState<string>('');
     const [city, setCity] = useState<string>('');
 
-    const getCities = () => cities.map(city => city.title);
+    const getCities = (): string[] => cities.map(city => city.title);
 
-    const onChangeValue = (fieldName: string) => {
+    const onChangeValue = (fieldName: string): ((v: string) => void) => {
         return (value: string): void | undefined => {
             if (fieldName === FormDataEnum.name) {
                 setName(value);
@@ -55,9 +50,9 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
         };
     };
 
-    const onSave = () => {
+    const onSave = (): void => {
         type diffStateKeyType = keyof typeof diffState;
-        for (let key in diffState) {
+        for (const key in diffState) {
             diffState[key as diffStateKeyType].prevValue = diffState[key as diffStateKeyType].value;
             diffState[key as diffStateKeyType].value = name;
         }
@@ -66,7 +61,7 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
         diffState.surname.value = surname;
         diffState.city.value = city;
 
-        for (let key in diffState) {
+        for (const key in diffState) {
             diffState[key as diffStateKeyType].hasChanged = diffState[key as diffStateKeyType].prevValue !== diffState[key as diffStateKeyType].value;
         }
 

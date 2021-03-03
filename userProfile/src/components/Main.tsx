@@ -14,10 +14,9 @@ export const Main: React.FC = () => {
     const [diffFormState, setDiffFormState] = useState<DiffFormState>({});
     const [showModal, setShowModal] = useState(false);
     const onCloseModal = (): void => setShowModal(false);
-    const onSaveForm = (diffFormState: any): void => {
+    const onSaveForm = (diffFormState: DiffFormState): void => {
         setShowModal(true);
         setDiffFormState(diffFormState);
-        console.log(diffFormState);
     };
 
     return (
