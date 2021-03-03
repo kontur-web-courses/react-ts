@@ -78,13 +78,20 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
                         <label htmlFor="name" className="label">
                             Имя
                         </label>
-                        <Input id="name" type="text" value={name} onValueChange={onChangeValue(FormDataEnum.name)} />
+                        <Input
+                            placeholder="Введите имя пользователя"
+                            id="name"
+                            type="text"
+                            value={name}
+                            onValueChange={onChangeValue(FormDataEnum.name)}
+                        />
                     </div>
                     <div>
                         <label htmlFor="surname" className="label">
                             Фамилия
                         </label>
                         <Input
+                            placeholder="Введите фамилию пользователя"
                             id="surname"
                             type="text"
                             value={surname}
@@ -96,9 +103,8 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
                             Город
                         </label>
                         <Select<string>
-                            items={getCities()}
-                            value={city}
                             placeholder="Выберите город"
+                            items={getCities()}
                             onValueChange={onChangeValue(FormDataEnum.city)}
                         />
                     </div>
