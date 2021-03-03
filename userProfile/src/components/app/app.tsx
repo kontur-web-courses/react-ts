@@ -22,9 +22,9 @@ const App = () => {
     const [isModalOpened, setIsModalOpened] = useState(false);
     const [modalMsg, setModalMsg] = useState<string[]>([]);
 
-    const equal = (state: any, prevState: any) => {
+    const equal = (state: FormState, prevState: FormState) => {
         const result = [];
-        for (const key of Object.keys(state)) {
+        for (const key of Object.keys(state) as (keyof FormState)[]) {
             if (state[key] !== prevState[key]) {
                 let message = ``;
                 switch (key) {
