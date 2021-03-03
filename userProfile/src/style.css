@@ -1,3 +1,27 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.form {
+    padding: 16px;
+}
+
+.form__title {
+    margin: 8px 0;
+    font-size: 24px;
+    line-height: 1.2em;
+}
+
+.form__item {
+    display: flex;
+    align-items: baseline;
+}
+
+.form__item-label {
+    width: 120px;
+    margin-right: 16px;
+}
+
+.form__item-input {
+    flex-grow: 1;
+}
