@@ -41,7 +41,9 @@ module.exports = {
     }
   },
   devServer: {
-    writeToDisk: true
+    writeToDisk: true,
+    port: 1337,
+    open: true,
   },
   plugins: [
     new webpack.ProvidePlugin({
