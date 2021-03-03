@@ -4,5 +4,12 @@ body {
 
 .label {
     display: inline-block;
-    width: 120px;
+    width: 150px;
+}
+
+.modalRow {
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid #c1bcbc;
+    border-radius: 5px;
 }
