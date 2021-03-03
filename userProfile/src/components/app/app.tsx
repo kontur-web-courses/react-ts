@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Gapped, Input, Select, Modal } from '@skbkontur/react-ui';
+import { Button, Gapped, Input, Select } from '@skbkontur/react-ui';
+import CustomModal from '../custom-modal/custom-modal';
 
 const CITIES = [`Москва`, `Санкт-Петербург`, `Екатеринбург`, `Новосибирск`, `Владивосток`, `Иннополис`];
 
@@ -9,34 +10,17 @@ type FormState = {
     city: string;
 };
 
-const App = () => {
-    const [isOpened, setIsOpened] = useState(false);
-    const [state, setState] = useState({
-        firstname: ``,
-        lastname: ``,
-        city: ``
-    });
-    const [prevState, setPrevState] = useState(state);
-    const [modalMsg, setModalMsg] = useState<string[]>([]);
+const initialState: FormState = {
+    firstname: ``,
+    lastname: ``,
+    city: ``
+};
 
-    const renderModal = (message: string[]) => {
-        return (
-            <Modal onClose={handleModalClose}>
-                <Modal.Header>Пользователь сохранен</Modal.Header>
-                {message.length !== 0 && (
-                    <Modal.Body>
-                        <p>Измененные данные:</p>
-                        {message.map(msg => (
-                            <p key={msg.length}>{msg}</p>
-                        ))}
-                    </Modal.Body>
-                )}
-                <Modal.Footer>
-                    <Button onClick={handleModalClose}>Закрыть</Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    };
+const App = () => {
+    const [state, setState] = useState(initialState);
+    const [prevState, setPrevState] = useState(initialState);
+    const [isModalOpened, setIsModalOpened] = useState(false);
+    const [modalMsg, setModalMsg] = useState<string[]>([]);
 
     const equal = (state: any, prevState: any) => {
         const result = [];
@@ -63,7 +47,7 @@ const App = () => {
     };
 
     const handleModalClose = () => {
-        setIsOpened(false);
+        setIsModalOpened(false);
     };
 
     const handleValueChange = (field: keyof FormState) => {
@@ -77,13 +61,13 @@ const App = () => {
 
     const handleSaveButtonClick = () => {
         setModalMsg(equal(state, prevState));
-        setIsOpened(true);
+        setIsModalOpened(true);
         setPrevState(state);
     };
 
     return (
         <>
-            {isOpened && renderModal(modalMsg)}
+            {isModalOpened && <CustomModal message={modalMsg} onClose={handleModalClose} />}
             <h2>Информация о пользователе</h2>
             <form>
                 <Gapped vertical gap={15}>
