@@ -62,7 +62,8 @@ export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
         diffState.city.value = city;
 
         for (const key in diffState) {
-            diffState[key as diffStateKeyType].hasChanged = diffState[key as diffStateKeyType].prevValue !== diffState[key as diffStateKeyType].value;
+            diffState[key as diffStateKeyType].hasChanged =
+                diffState[key as diffStateKeyType].prevValue !== diffState[key as diffStateKeyType].value;
         }
 
         saveForm(diffState);
