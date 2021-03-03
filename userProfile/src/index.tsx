@@ -1,4 +1,7 @@
 import './style.css';
+import React, { useState } from 'react';
+import ReactDom from 'react-dom';
+import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -56,4 +59,103 @@ import './style.css';
  *      Придумай, как избежать излишнего дублирования.
  */
 
-console.log('Hi from script!');
+type UserInfoData = {
+    name: string;
+    surname: string;
+    city: string | undefined;
+};
+
+const keyUserInfoMap = {
+    name: 'Имя',
+    surname: 'Фамилия',
+    city: 'Город'
+};
+
+const defaultUserInfo = {
+    name: '',
+    surname: '',
+    city: undefined
+};
+
+const Form = () => {
+    const cities: string[] = ['Москва', 'Санкт-Питербург', 'Екатеринбург', 'Казань'];
+    const [userInfo, setUserInfo] = useState<UserInfoData>(defaultUserInfo);
+    const [saveUserInfo, setSaveUserInfo] = useState<UserInfoData>(defaultUserInfo);
+    const [modalOpened, setModalOpened] = useState(false);
+
+    const changeData = (field: keyof UserInfoData): ((value: string) => void) => {
+        return (value: string) => {
+            setUserInfo(userInfo => ({ ...userInfo, [field]: value }));
+        };
+    };
+
+    const openModal = (): void => {
+        setModalOpened(true);
+    };
+
+    const closeModal = (): void => {
+        setSaveUserInfo({ ...userInfo });
+        setModalOpened(false);
+    };
+
+    const changedUserInfo = (): Array<JSX.Element> => {
+        const diffUserInfo: Array<JSX.Element> = [];
+
+        Object.keys(userInfo).forEach(userInfoKey => {
+            const key = userInfoKey as keyof UserInfoData;
+            if (userInfo[key] !== saveUserInfo[key]) {
+                diffUserInfo.push(
+                    <p key={key}>
+                        {keyUserInfoMap[key]}: было {saveUserInfo[key] || 'Пусто'}, стало {userInfo[key] || 'Пусто'}
+                    </p>
+                );
+            }
+        });
+
+        return diffUserInfo;
+    };
+
+    const renderModal = () => {
+        const diffUserInfo = changedUserInfo();
+        return (
+            <Modal onClose={closeModal}>
+                <Modal.Header>Пользователь сохранен</Modal.Header>
+                {diffUserInfo.length > 0 && (
+                    <Modal.Body>
+                        <p>Измененные данные:</p>
+                        {diffUserInfo.map(diff => diff)}
+                    </Modal.Body>
+                )}
+                <Modal.Footer>
+                    <Button onClick={closeModal}>Закрыть</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    };
+
+    return (
+        <form className="form">
+            {modalOpened && renderModal()}
+            <Gapped gap={15} vertical>
+                <h1>Информация о пользователе</h1>
+                <label>
+                    <span className="label">Имя</span>
+                    <Input placeholder="Введите имя пользователя" onValueChange={changeData('name')} />
+                </label>
+                <label>
+                    <span className="label">Фамилия</span>
+                    <Input placeholder="Введите фамилию пользователя" onValueChange={changeData('surname')} />
+                </label>
+                <label>
+                    <span className="label">Город</span>
+                    <Select<string> placeholder="Выберите город" items={cities} onValueChange={changeData('city')} />
+                </label>
+                <Button use="primary" size="large" onClick={openModal}>
+                    Сохранить
+                </Button>
+            </Gapped>
+        </form>
+    );
+};
+
+ReactDom.render(<Form />, document.getElementById('app'));
