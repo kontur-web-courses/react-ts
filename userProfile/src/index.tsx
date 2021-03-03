@@ -1,4 +1,9 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/app/app';
 import './style.css';
+
+ReactDOM.render(<App />, document.querySelector(`#root`));
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
