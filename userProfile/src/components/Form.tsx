@@ -9,11 +9,14 @@ enum FormData {
     city = 'city'
 }
 
-export const Form: React.FC = () => {
+interface FormPropTypes {
+    saveForm?: () => void;
+}
+
+export const Form: React.FC<FormPropTypes> = ({saveForm}) => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [city, setCity] = useState('');
-    const [showModal, setShowModal] = useState(false);
 
     const getCities = () => cities.map(city => city.title);
 
@@ -28,10 +31,6 @@ export const Form: React.FC = () => {
             }
         };
     };
-
-    const onSave = (): void => setShowModal(true);
-
-    const onCloseModal = (): void => setShowModal(false);
 
     return (
         <>
@@ -66,12 +65,11 @@ export const Form: React.FC = () => {
                             onValueChange={onChangeValue(FormData.city)}
                         />
                     </div>
-                    <Button use="primary" onClick={() => onSave()}>
+                    <Button use="primary" onClick={saveForm}>
                         Сохранить
                     </Button>
                 </Gapped>
             </form>
-            {showModal && <ModalComponent closeModal={() => onCloseModal()} />}
         </>
     );
 };
