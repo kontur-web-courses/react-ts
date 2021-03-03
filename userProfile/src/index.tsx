@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Form from './Form';
 import './style.css';
 
 /**
@@ -55,5 +58,4 @@ import './style.css';
  *      гражданство, национальность, номер телефона и адрес электронной почты.
  *      Придумай, как избежать излишнего дублирования.
  */
-
-console.log('Hi from script!');
+ReactDOM.render(<Form title={'Информация о sda пользователе'} />, document.querySelector('#app'));
