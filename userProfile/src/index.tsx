@@ -70,12 +70,12 @@ class Form extends React.Component {
         currentUser: { ...defaultUser }
     };
 
-    onChange = (name: string) => {
+    onChange = (fieldName: string) => {
         return (value: string) => {
             this.setState({
                 currentUser: {
                     ...this.state.currentUser,
-                    [name]: value
+                    [fieldName]: value
                 }
             });
         };
@@ -136,12 +136,11 @@ class Form extends React.Component {
     renderInputFields() {
         let allInputFields = [];
 
-        for (let field of inputFields) {
-            let id = field.id;
+        for (const field of inputFields) {
             allInputFields.push(
-                <label key={id}>
+                <label key={field.id}>
                     <div className="label">{field.label}</div>
-                    <Input onValueChange={this.onChange(id)} placeholder={field.placeholder} size="medium" />
+                    <Input onValueChange={this.onChange(field.id)} placeholder={field.placeholder} size="medium" />
                 </label>
             );
         }
@@ -151,7 +150,7 @@ class Form extends React.Component {
     renderSelectFields() {
         let allSelectFields = [];
 
-        for (let field of selectFields) {
+        for (const field of selectFields) {
             allSelectFields.push(
                 <label key={field.id}>
                     <div className="label">{field.label}</div>
