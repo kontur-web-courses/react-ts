@@ -1,4 +1,199 @@
+import React from 'react';
+import ReactDom from 'react-dom';
 import './style.css';
+import { Button, Gapped, Select, Input, Modal } from '@skbkontur/react-ui';
+
+type TUserInfo = {
+    name: string;
+    surname: string;
+    city: string;
+};
+
+type TFormState = {
+    isModal: boolean;
+    user: TUserInfo;
+    currentUser: TUserInfo;
+};
+
+type TInputParams = {
+    id: string;
+    label: string;
+    placeholder: string;
+};
+
+type TSelectParams = {
+    id: string;
+    label: string;
+    placeholder: string;
+    items: string[];
+};
+const cities = ['Москва', 'Санкт-Петербург', 'Екатеринбург', 'Нижний Новгород', 'Чита', 'Новосибирск', 'Рязань'];
+
+const defaultUser: TUserInfo = {
+    name: '',
+    surname: '',
+    city: ''
+};
+
+const inputFields: TInputParams[] = [
+    {
+        id: 'name',
+        label: 'Имя',
+        placeholder: 'Введите имя пользователя'
+    },
+    {
+        id: 'surname',
+        label: 'Фамилия',
+        placeholder: 'Введите фамилию пользователя'
+    }
+];
+
+const selectFields: TSelectParams[] = [
+    {
+        id: 'city',
+        label: 'Город',
+        placeholder: 'Выберите город',
+        items: cities
+    }
+];
+
+const fieldsNames = {
+    name: 'Имя',
+    surname: 'Фамилия',
+    city: 'Город'
+};
+
+class Form extends React.Component {
+    public state: TFormState = {
+        isModal: false,
+        user: { ...defaultUser },
+        currentUser: { ...defaultUser }
+    };
+
+    onChange = (name: string) => {
+        return (value: string) => {
+            this.setState({
+                currentUser: {
+                    ...this.state.currentUser,
+                    [name]: value
+                }
+            });
+        };
+    };
+
+    renderModal() {
+        return (
+            <Modal onClose={this.closeModal} width={400}>
+                <Modal.Header>Пользователь сохранен</Modal.Header>
+                <Modal.Body>
+                    <p>Измененные данные:</p>
+                    {this.getChanges() || 'Изменений нет'}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.closeModal}>Закрыть</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+
+    openModal = () => {
+        this.setState({ isModal: true });
+    };
+
+    closeModal = () => {
+        this.setState({
+            isModal: false,
+            user: this.state.currentUser
+        });
+    };
+
+    getDifferentFields() {
+        const { currentUser, user } = this.state;
+        let differentFields: (keyof TUserInfo)[] = [];
+        let field: keyof TUserInfo;
+
+        for (field in currentUser) {
+            if (currentUser[field] !== user[field]) {
+                differentFields.push(field);
+            }
+        }
+        return differentFields;
+    }
+
+    getChanges() {
+        const differentFields = this.getDifferentFields();
+
+        return differentFields.map(item => {
+            return (
+                <p key={item}>
+                    {fieldsNames[item]}: было {this.state.user[item] || 'пусто'}, стало{' '}
+                    {this.state.currentUser[item] || 'пусто'}
+                </p>
+            );
+        });
+    }
+
+    renderInputFields() {
+        let allInputFields = [];
+
+        for (let field of inputFields) {
+            let id = field.id;
+            allInputFields.push(
+                <label key={id}>
+                    <div className="label">{field.label}</div>
+                    <Input onValueChange={this.onChange(id)} placeholder={field.placeholder} size="medium" />
+                </label>
+            );
+        }
+        return allInputFields;
+    }
+
+    renderSelectFields() {
+        let allSelectFields = [];
+
+        for (let field of selectFields) {
+            allSelectFields.push(
+                <label key={field.id}>
+                    <div className="label">{field.label}</div>
+                    <Select<string>
+                        items={field.items}
+                        onValueChange={this.onChange(field.id)}
+                        placeholder={field.placeholder}
+                        size="medium"
+                    />
+                </label>
+            );
+        }
+        return allSelectFields;
+    }
+
+    renderForm() {
+        return (
+            <form>
+                <Gapped vertical gap={20}>
+                    {this.renderInputFields()}
+                    {this.renderSelectFields()}
+                    <Button use="primary" onClick={this.openModal} size="medium">
+                        Сохранить
+                    </Button>
+                </Gapped>
+            </form>
+        );
+    }
+
+    render() {
+        const isModal = this.state.isModal;
+        return (
+            <div>
+                <h2>Информация о пользователе</h2>
+                {this.renderForm()}
+                {isModal && this.renderModal()}
+            </div>
+        );
+    }
+}
+
+ReactDom.render(<Form />, document.getElementById('app'));
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -18,9 +213,10 @@ import './style.css';
  *     Используется компонент так:
  *
  *     const MyApp = () => (
- *        <div>
- *            Click this button <Button onClick={() => console.log('Hey!')}>Click me</Button>
- *        </div>
+ *
+ <div>
+ * Click this button <Button onClick={() => console.log('Hey!')}>Click me</Button>
+ * </div>
  *     );
  *
  *
@@ -55,5 +251,3 @@ import './style.css';
  *      гражданство, национальность, номер телефона и адрес электронной почты.
  *      Придумай, как избежать излишнего дублирования.
  */
-
-console.log('Hi from script!');
