@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Input, Gapped, Select, Modal } from '@skbkontur/react-ui';
 
 const cities: string[] = ['Екатеринбург', 'Н.Тагил', 'Москва', 'Санкт-Петербург', 'Казань'];
