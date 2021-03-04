@@ -1,3 +1,18 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+label {
+    display:flex;
+    align-items: center;
+}
+
+#app {
+    display:flex;
+    flex-direction: column;
+    margin-left: 50px;
+}
+
+.label {
+    width: 200px;
+}
