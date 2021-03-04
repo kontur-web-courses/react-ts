@@ -1,14 +1,10 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { Button, Gapped, Input, Select } from '@skbkontur/react-ui';
 import CustomModal from '../custom-modal/custom-modal';
+import Form from '../form/form';
+import { FormState } from '../../types';
 
 const CITIES = [`Москва`, `Санкт-Петербург`, `Екатеринбург`, `Новосибирск`, `Владивосток`, `Иннополис`];
-
-type FormState = {
-    firstname: string;
-    lastname: string;
-    city: string;
-};
 
 const initialState: FormState = {
     firstname: ``,
@@ -19,10 +15,10 @@ const initialState: FormState = {
 const App = () => {
     const [state, setState] = useState(initialState);
     const [prevState, setPrevState] = useState(initialState);
-    const [isModalOpened, setIsModalOpened] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMsg, setModalMsg] = useState<string[]>([]);
 
-    const equal = (state: FormState, prevState: FormState) => {
+    const getModalMessage = (state: FormState, prevState: FormState) => {
         const result = [];
         for (const key of Object.keys(state) as (keyof FormState)[]) {
             if (state[key] !== prevState[key]) {
@@ -47,7 +43,7 @@ const App = () => {
     };
 
     const handleModalClose = () => {
-        setIsModalOpened(false);
+        setIsModalOpen(false);
     };
 
     const handleValueChange = (field: keyof FormState) => {
@@ -60,51 +56,21 @@ const App = () => {
     };
 
     const handleSaveButtonClick = () => {
-        setModalMsg(equal(state, prevState));
-        setIsModalOpened(true);
+        setModalMsg(getModalMessage(state, prevState));
+        setIsModalOpen(true);
         setPrevState(state);
     };
 
     return (
         <>
-            {isModalOpened && <CustomModal message={modalMsg} onClose={handleModalClose} />}
+            {isModalOpen && <CustomModal message={modalMsg} onClose={handleModalClose} />}
             <h2>Информация о пользователе</h2>
-            <form>
-                <Gapped vertical gap={15}>
-                    <label htmlFor="firstname">
-                        <span className="label">Имя</span>
-                        <Input
-                            id="firstname"
-                            placeholder="Введите имя"
-                            value={state.firstname}
-                            onValueChange={handleValueChange(`firstname`)}
-                        />
-                    </label>
-
-                    <label htmlFor="lastname">
-                        <span className="label">Фамилия</span>
-                        <Input
-                            id="lastname"
-                            placeholder="Введите фамилию"
-                            value={state.lastname}
-                            onValueChange={handleValueChange(`lastname`)}
-                        />
-                    </label>
-
-                    <label htmlFor="city">
-                        <span className="label">Город</span>
-                        <Select<string>
-                            items={CITIES}
-                            placeholder="Выберите город"
-                            value={state.city}
-                            onValueChange={handleValueChange(`city`)}
-                        />
-                    </label>
-                    <Button use="primary" onClick={handleSaveButtonClick}>
-                        Сохранить
-                    </Button>
-                </Gapped>
-            </form>
+            <Form
+                cities={CITIES}
+                state={state}
+                onChange={handleValueChange}
+                onSave={handleSaveButtonClick}
+            />
         </>
     );
 };
