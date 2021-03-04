@@ -1,3 +1,28 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.label{
+    display: inline-block;
+    width: 100px;
+}
+
+.form{
+    /* margin-left: 40%;
+    margin-top: 10%; */
+    border: 5px solid rgb(52, 166, 241);
+    margin: 10% 20% 0% 40%;
+    align-content: space-around;
+    padding-left: 10px;
+    padding-bottom: 7px;
+}
+.title{
+    position: relative;
+    margin-left: 25%;
+}
+
+
+.buttonwrap{
+    position: relative;
+    
+}
