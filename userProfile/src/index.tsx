@@ -1,4 +1,9 @@
 import './style.css';
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Button } from '@skbkontur/react-ui';
+import { Form } from './components/Form/form';
+import { SuccessModal } from './components/SuccessModal/SuccessModal';
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -56,4 +61,52 @@ import './style.css';
  *      Придумай, как избежать излишнего дублирования.
  */
 
-console.log('Hi from script!');
+export const FormDataContext = React.createContext({ formData: {} as UserFormData, oldFormData: {} as UserFormData });
+
+export type UserFormData = { firstName?: string; lastName?: string; city?: string };
+
+type AppState = { showModal: boolean; formData: UserFormData; oldFormData: UserFormData };
+
+export class App extends React.Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            showModal: false,
+            formData: {},
+            oldFormData: {}
+        };
+    }
+
+    showModal(formData: UserFormData) {
+        const oldFormData = this.state.formData;
+        this.setState({
+            formData,
+            oldFormData
+        });
+        this.setModalVisibility(true);
+    }
+
+    setModalVisibility(value: boolean) {
+        this.setState({
+            showModal: value
+        });
+    }
+
+    render() {
+        const { showModal, formData, oldFormData } = this.state;
+
+        return (
+            <div>
+                <Form onSubmit={this.showModal.bind(this)} />
+                {showModal && (
+                    <FormDataContext.Provider value={{ formData, oldFormData }}>
+                        <SuccessModal onClose={() => this.setModalVisibility(false)} />
+                    </FormDataContext.Provider>
+                )}
+            </div>
+        );
+    }
+}
+const element = <App />;
+
+ReactDom.render(element, document.getElementById('root'));
