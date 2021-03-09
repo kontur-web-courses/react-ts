@@ -2,7 +2,7 @@ body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
 
-label {
+.label {
     display:flex;
     align-items: center;
 }
@@ -13,6 +13,6 @@ label {
     margin-left: 50px;
 }
 
-.label {
+.labelText {
     width: 200px;
 }

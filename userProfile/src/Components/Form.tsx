@@ -8,18 +8,13 @@ interface FormData {
     surname: string;
     city: string | undefined;
 }
-
-const saveData: FormData = {
-    name: '',
-    surname: '',
-    city: ''
-};
-
 const defaultData: FormData = {
     name: '',
     surname: '',
-    city: cities[0]
+    city: undefined
 };
+
+const savedData: FormData = { ...defaultData };
 
 const Form = () => {
     const [name, setName] = useState(defaultData.name);
@@ -51,7 +46,7 @@ const Form = () => {
     };
 
     const submitForm = () => {
-        setPerson({ name: name, surname: surname, city: city });
+        setPerson({ name, surname, city });
         setOpened(true);
     };
 
@@ -59,29 +54,29 @@ const Form = () => {
         return (
             <form className="form">
                 <Gapped gap={15} vertical>
-                    <label>
-                        <div className="label">Имя</div>
+                    <label className="label">
+                        <p className="labelText">Имя</p>
                         <Input
                             placeholder="Введите имя пользователя"
                             value={name}
-                            onChange={e => handlerField('name', e.target.value)}
+                            onValueChange={value => handlerField('name', value)}
                         />
                     </label>
-                    <label>
-                        <div className="label">Фамилия</div>
+                    <label className="label">
+                        <p className="labelText">Фамилия</p>
                         <Input
                             placeholder="Введите имя пользователя"
                             value={surname}
-                            onChange={e => handlerField('surname', e.target.value)}
+                            onValueChange={value => handlerField('surname', value)}
                         />
                     </label>
-                    <label>
-                        <div className="label">Город</div>
+                    <label className="label">
+                        <p className="labelText">Город</p>
                         <Select<string>
                             placeholder="Выберите город"
                             items={cities}
                             value={city}
-                            onValueChange={e => handlerField('city', e)}
+                            onValueChange={value => handlerField('city', value)}
                         />
                     </label>
 
@@ -95,23 +90,19 @@ const Form = () => {
 
     const renderModal = () => {
         const closeModal = () => {
-            saveData.name = name;
-            saveData.surname = surname;
-            saveData.city = city;
+            savedData.name = name;
+            savedData.surname = surname;
+            savedData.city = city;
 
-            setName(defaultData.name);
-            setSurname(defaultData.surname);
             setOpened(false);
         };
 
         const renderDiff = (field: keyof FormData, fieldName: string) => {
-            if (saveData[field] !== person[field] && !isNothingChanged) {
+            if (savedData[field] !== person[field]) {
                 return (
-                    <>
-                        <p>
-                            {fieldName}: было {saveData[field] || '*ничего*'}, стало {person[field] || '*ничего*'}
-                        </p>
-                    </>
+                    <p>
+                        {fieldName}: было {savedData[field] || '*ничего*'}, стало {person[field] || '*ничего*'}
+                    </p>
                 );
             }
             return null;
@@ -128,14 +119,14 @@ const Form = () => {
             );
         };
 
-        const isNothingChanged = (Object.keys(saveData) as (keyof FormData)[]).every(
-            key => person[key] === saveData[key]
+        const isNothingChanged = (Object.keys(savedData) as (keyof FormData)[]).every(
+            key => person[key] === savedData[key]
         );
 
         return (
             <Modal onClose={closeModal}>
                 <Modal.Header>Пользователь сохранен</Modal.Header>
-                <Modal.Body>{!isNothingChanged && renderChange()}</Modal.Body>
+                <Modal.Body>{!isNothingChanged ? renderChange() : <p>Ничего не изменилось</p>}</Modal.Body>
                 <Modal.Footer>
                     <Button onClick={closeModal}>Закрыть</Button>
                 </Modal.Footer>

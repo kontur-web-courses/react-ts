@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 import Form from './Components/Form';
 import './style.css';
 
-ReactDom.render(<Form />, document.getElementById('app'));
+ReactDom.render(<Form />, document.getElementById('root'));
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
