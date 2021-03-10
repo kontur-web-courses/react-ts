@@ -8,6 +8,7 @@ interface FormData {
     surname: string;
     city: string | undefined;
 }
+
 const defaultData: FormData = {
     name: '',
     surname: '',
@@ -17,36 +18,14 @@ const defaultData: FormData = {
 const savedData: FormData = { ...defaultData };
 
 const Form = () => {
-    const [name, setName] = useState(defaultData.name);
-    const [surname, setSurname] = useState(defaultData.surname);
-    const [city, setCity] = useState(defaultData.city);
-
-    const [person, setPerson] = useState({
-        name,
-        surname,
-        city
-    });
-
+    const [person, setPerson] = useState({ ...defaultData });
     const [opened, setOpened] = useState(false);
 
     const handlerField = (field: keyof FormData, value: string) => {
-        switch (field) {
-            case 'name':
-                setName(value);
-                break;
-            case 'surname':
-                setSurname(value);
-                break;
-            case 'city':
-                setCity(value);
-                break;
-            default:
-                throw new Error();
-        }
+        setPerson({ ...person, [field]: value });
     };
 
     const submitForm = () => {
-        setPerson({ name, surname, city });
         setOpened(true);
     };
 
@@ -55,27 +34,27 @@ const Form = () => {
             <form className="form">
                 <Gapped gap={15} vertical>
                     <label className="label">
-                        <p className="labelText">Имя</p>
+                        <span className="labelText">Имя</span>
                         <Input
                             placeholder="Введите имя пользователя"
-                            value={name}
+                            value={person.name}
                             onValueChange={value => handlerField('name', value)}
                         />
                     </label>
                     <label className="label">
-                        <p className="labelText">Фамилия</p>
+                        <span className="labelText">Фамилия</span>
                         <Input
                             placeholder="Введите имя пользователя"
-                            value={surname}
+                            value={person.surname}
                             onValueChange={value => handlerField('surname', value)}
                         />
                     </label>
                     <label className="label">
-                        <p className="labelText">Город</p>
+                        <span className="labelText">Город</span>
                         <Select<string>
                             placeholder="Выберите город"
                             items={cities}
-                            value={city}
+                            value={person.city}
                             onValueChange={value => handlerField('city', value)}
                         />
                     </label>
@@ -90,9 +69,9 @@ const Form = () => {
 
     const renderModal = () => {
         const closeModal = () => {
-            savedData.name = name;
-            savedData.surname = surname;
-            savedData.city = city;
+            savedData.name = person.name;
+            savedData.surname = person.surname;
+            savedData.city = person.city;
 
             setOpened(false);
         };
