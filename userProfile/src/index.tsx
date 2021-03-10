@@ -1,7 +1,8 @@
 import './style.css';
-import React, { ChangeEvent, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import ReactDom from 'react-dom';
 import { Button, Center, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
+import { string } from 'prop-types';
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -99,7 +100,7 @@ class Form extends React.Component<{}, UserFormState> {
         };
     }
 
-    changeSelect = (value: any) => {
+    changeSelect = (value: string) => {
         const values = this.state.values;
         values['city'] = value;
 
@@ -180,7 +181,7 @@ class Form extends React.Component<{}, UserFormState> {
                             <label className="form__item-label" htmlFor="user-surname">
                                 Город
                             </label>
-                            <Select
+                            <Select<string>
                                 placeholder="Выберите город"
                                 items={items}
                                 value={this.state.values.city}
