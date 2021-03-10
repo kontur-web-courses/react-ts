@@ -4,4 +4,4 @@ import ReactDom from 'react-dom';
 import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
 import FormComponent from './components/FormComponent';
 
-ReactDom.render(<FormComponent />, document.getElementById('main'));
+ReactDom.render(<FormComponent />, document.getElementById('root'));

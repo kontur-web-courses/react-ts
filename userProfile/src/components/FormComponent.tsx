@@ -1,13 +1,13 @@
 import '../style.css';
 import React, { useState } from 'react';
 import ReactDom from 'react-dom';
-import { Button, Input, Select, Gapped } from '@skbkontur/react-ui';
-import ModalComponent from './ModalComponent';
+import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
 
-type FormData = {
+type FormInfo = {
     name: string;
     lastName: string;
     city: string;
+    [key: string]: string;
 };
 
 type InputProps = {
@@ -23,18 +23,63 @@ type SelectProps = {
     valueKey: string;
 };
 
-const currentDataContext = React.createContext<Partial<{ formData: FormData; updateFunc: any }>>({});
+type ModalProps = {
+    currentData: FormInfo;
+    prevData: FormInfo;
+    currentFormData(props: FormInfo): FormInfo;
+    close(isClosed: boolean): void;
+};
+
+const ModalComponent = (props: ModalProps) => {
+    const closeAction = () => {
+        props.currentFormData({ ...props.currentData });
+        props.close(false);
+    };
+
+    const updates = compareData(props.currentData, props.prevData);
+    return (
+        <Modal onClose={closeAction}>
+            <Modal.Header>Пользователь сохранен</Modal.Header>
+            <Modal.Body>
+                {updates.length > 0 ? <p>Измененные данные:</p> : <p>Данные добавлены.</p>}
+                {updates.map(item => (
+                    <p key={item}>{item}</p>
+                ))}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={closeAction}>Закрыть</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+};
+
+enum DataType {
+    name = 'Имя',
+    lastName = 'Фамилия',
+    city = 'Город'
+}
+
+function compareData(currentData: FormInfo, prevData: FormInfo): string[] {
+    let updates: string[] = [];
+    for (const key in currentData) {
+        if (prevData[key] && currentData[key] !== prevData[key])
+            updates.push((DataType as any)[key] + ': было ' + prevData[key] + ', стало ' + currentData[key]);
+    }
+    return updates;
+}
+
+const currentDataContext = React.createContext<Partial<{ formData: FormInfo; updateFunc: any }>>({});
 const DataProvider = currentDataContext.Provider;
 const DataConsumer = currentDataContext.Consumer;
 
 const FormComponent = () => {
     const [isDisplayed, openModal] = useState(false);
-    const [currentState, updateState] = useState<FormData>({
+    const [currentState, updateState] = useState<FormInfo>({
         name: '',
         lastName: '',
         city: ''
     });
-    const [prevFormData, currentFormData] = useState<FormData>(initializeFormData());
+    const [prevFormData, currentFormData] = useState<FormInfo>(initializeFormData());
 
     return (
         <DataProvider value={{ formData: currentState, updateFunc: updateState }}>
@@ -119,14 +164,14 @@ const InputComponent = (props: InputProps) => {
     );
 };
 
-function initializeFormData(): FormData {
+function initializeFormData(): FormInfo {
     let data = {
         name: '',
         lastName: '',
         city: ''
     };
     Object.keys(data).map(key => {
-        data[key] = '';
+        (data as any)[key] = '';
     });
     return data;
 }
