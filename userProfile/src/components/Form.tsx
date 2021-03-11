@@ -1,12 +1,16 @@
-import React, { useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import { cities } from '../data/cities';
 import { Gapped, Input, Select, Button } from '@skbkontur/react-ui';
-import {ModalComponent} from "./ModalComponent";
+import { DiffFormState } from './Main';
 
 enum FormDataEnum {
     name = 'name',
     surname = 'surname',
     city = 'city'
+}
+
+interface FormPropTypes {
+    saveForm: (diffState: DiffFormState) => void;
 }
 
 const diffState = {
@@ -27,20 +31,10 @@ const diffState = {
     }
 };
 
-export interface DiffFormState {
-    [key: string]: {
-        prevValue: string;
-        value: string;
-        hasChanged: boolean;
-    };
-}
-
-export const Form: React.FC = () => {
+export const Form: React.FC<FormPropTypes> = ({ saveForm }) => {
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [city, setCity] = useState<string>('');
-    const [diffFormState, setDiffFormState] = useState<DiffFormState>({});
-    const [showModal, setShowModal] = useState(false);
 
     const getCities = (): string[] => cities.map(city => city.title);
 
@@ -56,7 +50,7 @@ export const Form: React.FC = () => {
         };
     };
 
-    const onSaveForm = (): void => {
+    const onSave = (): void => {
         type diffStateKeyType = keyof typeof diffState;
         for (const key in diffState) {
             diffState[key as diffStateKeyType].prevValue = diffState[key as diffStateKeyType].value;
@@ -72,11 +66,8 @@ export const Form: React.FC = () => {
                 diffState[key as diffStateKeyType].prevValue !== diffState[key as diffStateKeyType].value;
         }
 
-        setShowModal(true);
-        setDiffFormState(diffState);
+        saveForm(diffState);
     };
-
-    const onCloseModal = (): void => setShowModal(false);
 
     return (
         <>
@@ -117,12 +108,11 @@ export const Form: React.FC = () => {
                             onValueChange={onChangeValue(FormDataEnum.city)}
                         />
                     </div>
-                    <Button use="primary" onClick={() => onSaveForm()}>
+                    <Button use="primary" onClick={() => onSave()}>
                         Сохранить
                     </Button>
                 </Gapped>
             </form>
-            {showModal && <ModalComponent closeModal={() => onCloseModal()} diffState={diffFormState} />}
         </>
     );
 };
