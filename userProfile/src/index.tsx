@@ -2,7 +2,6 @@ import './style.css';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Button, Input, Select, Gapped, Modal } from '@skbkontur/react-ui';
-import './style.css';
 
 /**
  *  Итак, перед тобой пустой проект. Давай его чем-то заполним. Не стесняйся подсматривать в уже сделанные задачи,
@@ -59,115 +58,125 @@ import './style.css';
  *      гражданство, национальность, номер телефона и адрес электронной почты.
  *      Придумай, как избежать излишнего дублирования.
  */
-const prevUser: { name?: string; surname?: string; city?: string } = {};
+const cities = ['Екатеринбург', 'Москва', 'Санкт-Петербург', 'Казань'];
+type FormState = { currentUser: FormData; previousUser: FormData; isModalOpen: boolean };
+type FormData = { [name: string]: string };
 
-class Form extends React.Component {
-    constructor(props: any) {
+class Form extends React.Component<{}, FormState> {
+    constructor(props: {}) {
         super(props);
         this.state = {
-            name: '',
-            surname: '',
-            city: 'Екатеринбург',
-            opened: false
+            previousUser: { name: '', surname: '', city: '' },
+            currentUser: { name: '', surname: '', city: '' },
+            isModalOpen: false
         };
-        this.renderModal = this.renderModal.bind(this);
-        this.open = this.open.bind(this);
-        this.close = this.close.bind(this);
     }
 
-    renderModal() {
-        let modalHeader = '';
-        let str = '';
-        let name = '';
-        let surname = '';
-        let city = '';
-        let modalBody;
-        if (Object.keys(prevUser).length === 0) {
-            modalHeader = 'Пользователь сохранен';
-        } else {
-            str = 'Измененные данные: ';
-            modalHeader = 'Пользователь изменен';
-            if (prevUser.name !== this.state.name) {
-                name += `Имя: было: ${prevUser.name}, стало: ${this.state.name}`;
-            }
-            if (prevUser.surname !== this.state.surname) {
-                surname += `Фамилия: было: ${prevUser.surname}, стало: ${this.state.surname}`;
-            }
-            if (prevUser.city !== this.state.city) {
-                city += `Город: было: ${prevUser.city}, стало: ${this.state.city}`;
-            }
-            modalBody = <Modal.Body>
-                <p>{str}</p>
-                <p>{name}</p>
-                <p>{surname}</p>
-                <p>{city}</p>
+    renderModal = (): JSX.Element => {
+        const userHasChanged = !Object.values(this.state.previousUser).every(field => field === '');
+        const modalBody = (
+            <Modal.Body>
+                <div>Измененные данные:</div>
+                <ChangedRow field="name" currentUser={this.state.currentUser} previousUser={this.state.previousUser} />
+                <ChangedRow field="surname" currentUser={this.state.currentUser} previousUser={this.state.previousUser} />
+                <ChangedRow field="city" currentUser={this.state.currentUser} previousUser={this.state.previousUser} />
             </Modal.Body>
-        }
-        prevUser.name = this.state.name;
-        prevUser.surname = this.state.surname;
-        prevUser.city = this.state.city;
+        );
         return (
             <Modal onClose={this.close}>
-                <Modal.Header>{modalHeader}</Modal.Header>
-                {modalBody}
+                <Modal.Header>Пользователь сохранен</Modal.Header>
+                {userHasChanged && modalBody}
                 <Modal.Footer>
                     <Button onClick={this.close}>Закрыть</Button>
                 </Modal.Footer>
             </Modal>
         );
-    }
+    };
 
-    open() {
-        this.setState({ opened: true });
-    }
+    open = () => {
+        this.setState({ isModalOpen: true });
+    };
 
-    close() {
-        this.setState({ opened: false });
-    }
+    close = () => {
+        this.setState({ previousUser: { ...this.state.currentUser } });
+        this.setState({ isModalOpen: false });
+    };
+
+    setValue = (value: string, field: string) => {
+        this.setState({ currentUser: { ...this.state.currentUser, [field]: value } });
+    };
 
     render() {
-        const items = ['Екатеринбург', 'Москва', 'Санкт-Петербург', 'Казань'];
         return (
-            <div className="Form-container">
-                {this.state.opened && this.renderModal()}
-                <h1 className="Form-header">Информация о пользователе</h1>
-                <form className="Form">
-                    <Gapped vertical gap={20}>
-                        <div className="Form-group">
+            <div className="form-container">
+                {this.state.isModalOpen && this.renderModal()}
+                <h1 className="form-header">Информация о пользователе</h1>
+                <form className="form">
+                    <Gapped vertical gap={16}>
+                        <div className="form-group">
                             <label className="label" htmlFor="name">
                                 Имя
                             </label>
                             <Input
                                 id="name"
                                 placeholder="Введите имя пользователя"
-                                onValueChange={value => this.setState({name: value})}
-                            />
+                                onValueChange={(value: string) => this.setValue(value, 'name')}
+                            ></Input>
                         </div>
-                        <div className="Form-group">
+                        <div className="form-group">
                             <label className="label" htmlFor="surname">
                                 Фамилия
                             </label>
                             <Input
                                 id="surname"
                                 placeholder="Введите фамилию пользователя"
-                                onValueChange={value => this.setState({surname: value})}
-                            />
+                                onValueChange={(value: string) => this.setValue(value, 'surname')}
+                            ></Input>
                         </div>
-                        <div className="Form-group">
+                        <div className="form-group">
                             <label className="label" htmlFor="city">
                                 Город
                             </label>
-                            <Select
+                            <Select<string>
+                                items={cities}
                                 placeholder="Выберите город"
-                                items={items}
-                                value={this.state.city}
-                                onValueChange={value => this.setState({ city: value })}
+                                onValueChange={(value: string) => this.setValue(value, 'city')}
                             />
                         </div>
                         <Button onClick={this.open}>Сохранить</Button>
                     </Gapped>
                 </form>
             </div>
+        );
+    }
+}
+type ChangeRowPropsType = { field: keyof FormData; previousUser: FormData; currentUser: FormData };
+
+class ChangedRow extends React.Component<ChangeRowPropsType, {}> {
+    constructor(props: ChangeRowPropsType) {
+        super(props);
+    }
+    render() {
+        const fieldHasChanged: boolean =
+            this.props.currentUser[this.props.field] !== this.props.previousUser[this.props.field];
+        let fieldName = '';
+        switch (this.props.field) {
+            case 'name':
+                fieldName = 'Имя';
+                break;
+            case 'surname':
+                fieldName = 'Фамилия';
+                break;
+            case 'city':
+                fieldName = 'Город';
+                break;
+        }
+        return (
+            fieldHasChanged && (
+                <div>
+                    {fieldName}: было {this.props.previousUser[this.props.field]}, стало {this.props.currentUser[this.props.field]}
+                </div>
+            )
         );
     }
 }
