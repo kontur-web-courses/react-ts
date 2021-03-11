@@ -1,11 +1,11 @@
 import './style.css';
 import React from 'react';
 import ReactDom from 'react-dom';
-import { Main } from './components/Main';
+import {Form} from "./components/Form";
 
 ReactDom.render(
     <>
-        <Main />
+        <Form />
     </>,
     document.getElementById('app')
 );
