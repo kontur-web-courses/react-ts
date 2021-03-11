@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal } from '@skbkontur/react-ui';
-import { DiffFormState } from './Main';
+import { DiffFormState } from '../commonTypes';
 
 interface ModalComponentProps {
     closeModal?: () => void;

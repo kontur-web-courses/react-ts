@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { cities } from '../data/cities';
 import { Gapped, Input, Select, Button } from '@skbkontur/react-ui';
-import { DiffFormState } from './Main';
+import { DiffFormState } from '../commonTypes';
 
 enum FormDataEnum {
     name = 'name',
