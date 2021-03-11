@@ -4,9 +4,7 @@ import ReactDom from 'react-dom';
 import {Form} from "./components/Form";
 
 ReactDom.render(
-    <>
-        <Form />
-    </>,
+    <Form />,
     document.getElementById('app')
 );
 /**
