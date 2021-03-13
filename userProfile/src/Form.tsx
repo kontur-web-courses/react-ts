@@ -1,133 +1,152 @@
-import React, {RefObject} from "react";
-import {Button, Gapped, Input, Select} from "@skbkontur/react-ui";
+import React, { RefObject } from 'react';
+import { Button, Gapped, Input, Select } from '@skbkontur/react-ui';
+import UserBio from './UserBio';
+import { formFields } from './formFields';
 
-const cities = ['Екатеринбург', 'Тюмень', 'Челябинск', 'Курган'];
-
-type FormProps = {
-    inputNameRef: RefObject<Input>;
-    inputSurnameRef: RefObject<Input>;
-    changeFormData: (value: string, field: string) => void;
-    checkValidation: () => void;
-}
-
-function Form(props: FormProps) {
-    return (
-        <form>
-            <h2>Информация о пользователе</h2>
-            <Gapped gap={15} vertical>
-                <div className='row'>
-                    <label>
-                        <div className='label'>Имя</div>
-                        <Input
-                            ref={props.inputNameRef}
-                            type='text'
-                            placeholder='Введите имя пользователя'
-                            onValueChange={value => props.changeFormData(value, 'name')}
-                        />
-                    </label>
-                </div>
-                <div className='row'>
-                    <label>
-                        <div className='label'>Фамилия</div>
-                        <Input
-                            ref={props.inputSurnameRef}
-                            type='text'
-                            placeholder='Введите фамилию пользователя'
-                            onValueChange={value => props.changeFormData(value, 'surname')}
-                        />
-                    </label>
-                </div>
-                <SelectFormRow
-                    label='Город'
-                    items={cities}
-                    placeholder='Выберите город'
-                    onValueChange={value => props.changeFormData(value, 'city')}
-                />
-                <SelectFormRow
-                    label='Пол'
-                    items={['мужчина', 'женщина', 'не определился']}
-                    placeholder='Введите пол'
-                    onValueChange={value => props.changeFormData(value, 'sex')}
-                />
-                <InputFormRow
-                    label='Дата рождения'
-                    //Насколько я поняла, Input из React UI может иметь тип только text или password :(
-                    type='text'
-                    placeholder='Введите дату рождения'
-                    onValueChange={value => props.changeFormData(value, 'dateOfBirth')}
-                />
-                <SelectFormRow
-                    label='Город рождения'
-                    items={cities}
-                    placeholder='Выберите город рождения'
-                    onValueChange={value => props.changeFormData(value, 'cityOfBirth')}
-                />
-                <SelectFormRow
-                    label='Семейное положение'
-                    items={['Свободен', 'В браке']}
-                    placeholder='Выберите семейное положение'
-                    onValueChange={value => props.changeFormData(value, 'maritalStatus')}
-                />
-                <SelectFormRow
-                    label='Гражданство'
-                    items={['РФ', 'США']}
-                    placeholder='Выберите гражданство'
-                    onValueChange={value => props.changeFormData(value, 'citizenship')}
-                />
-                <InputFormRow
-                    label='Национальность'
-                    type='text'
-                    placeholder='Введите национальность'
-                    onValueChange={value => props.changeFormData(value, 'nationality')}
-                />
-                <InputFormRow
-                    label='Номер телефона'
-                    type='text'
-                    placeholder='Введите номер телефона'
-                    onValueChange={value => props.changeFormData(value, 'phoneNumber')}
-                />
-                <InputFormRow
-                    label='E-mail'
-                    type='text'
-                    placeholder='Введите адрес электронной почты'
-                    onValueChange={value => props.changeFormData(value, 'email')}
-                />
-                <Button use="primary" onClick={props.checkValidation}>Сохранить</Button>
-            </Gapped>
-        </form>
-    );
-}
-
-type FormRowProps = {
-    label: string;
-    type?: 'text' | 'password' | undefined;
-    items?: string[];
-    placeholder: string;
-    onValueChange: (value: string) => void;
+export type FormData = {
+    name: string;
+    surname: string;
+    city: string;
+    sex: string;
+    dateOfBirth: string;
+    cityOfBirth: string;
+    maritalStatus: string;
+    citizenship: string;
+    nationality: string;
+    phoneNumber: string;
+    email: string;
+    [index: string]: string;
 };
 
-function InputFormRow(props: FormRowProps) {
-    const {label, ...rest} = props;
-    return (
-        <div className='row'>
-            <label>
-                <div className='label'>{label}</div>
-                <Input {...rest}/>
-            </label>
-        </div>
-    );
-}
+const defaultFormData = {
+    name: '',
+    surname: '',
+    city: '',
+    sex: '',
+    dateOfBirth: '',
+    cityOfBirth: '',
+    maritalStatus: '',
+    citizenship: '',
+    nationality: '',
+    phoneNumber: '',
+    email: ''
+};
 
-function SelectFormRow(props: FormRowProps) {
-    const {label, ...rest} = props;
-    return (
-        <div className='row'>
-            <label>
-                <div className='label'>{label}</div>
-                <Select<string>{...rest}/>
-            </label>
-        </div>
-    );
-}
+type FormState = {
+    isModalOpened: boolean;
+    savedData: FormData;
+    currentData: FormData;
+    fieldValidation: { name: boolean; surname: boolean };
+};
 
-export default Form;
+export class Form extends React.Component<{}, FormState> {
+    private inputNameRef = React.createRef<Input>();
+    private inputSurnameRef = React.createRef<Input>();
+
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            isModalOpened: false,
+            savedData: { ...defaultFormData },
+            currentData: { ...defaultFormData },
+            fieldValidation: {
+                name: false,
+                surname: false
+            }
+        };
+    }
+
+    openModal = () => {
+        this.setState({
+            isModalOpened: true
+        });
+    };
+
+    closeModel = () => {
+        this.setState({
+            isModalOpened: false
+        });
+    };
+
+    closeModalAndSaveData = () => {
+        this.setState({
+            isModalOpened: false,
+            savedData: this.state.currentData
+        });
+    };
+
+    openModalOrHighlightErrors = () => {
+        if (this.state.currentData.name && this.state.currentData.surname) this.openModal();
+        if (!this.state.currentData.name) this.inputNameRef.current?.blink();
+        if (!this.state.currentData.surname) this.inputSurnameRef.current?.blink();
+    };
+
+    changeFormData = (value: string, field: keyof FormData) => {
+        this.setState({
+            currentData: {
+                ...this.state.currentData,
+                [field]: value
+            }
+        });
+    };
+
+    renderForm() {
+        const res = [];
+        for (const fieldName in formFields) {
+            const field = formFields[fieldName];
+            res.push(
+                <label key={field.fieldName}>
+                    <span className="label">{field.label}</span>
+                    {field.elementType === 'input' ? (
+                        <Input
+                            ref={
+                                field.fieldName === 'name'
+                                    ? this.inputNameRef
+                                    : field.fieldName === 'surname'
+                                    ? this.inputSurnameRef
+                                    : null
+                            }
+                            type="text"
+                            placeholder={field.placeholder}
+                            onValueChange={value => this.changeFormData(value, field.fieldName)}
+                        />
+                    ) : (
+                        <Select<string>
+                            items={field.items}
+                            placeholder={field.placeholder}
+                            onValueChange={value => this.changeFormData(value, field.fieldName)}
+                        />
+                    )}
+                </label>
+            );
+        }
+
+        return (
+            <form>
+                <h1>Информация о пользователе</h1>
+                <Gapped gap={16} vertical>
+                    {res}
+                    <Button use="primary" onClick={this.openModalOrHighlightErrors}>
+                        Сохранить
+                    </Button>
+                </Gapped>
+            </form>
+        );
+    }
+
+    render() {
+        return (
+            <div>
+                {this.renderForm()}
+                {this.state.isModalOpened && (
+                    <UserBio
+                        closeModalAndSaveData={this.closeModalAndSaveData}
+                        closeModal={this.closeModel}
+                        currentData={this.state.currentData}
+                        savedData={this.state.savedData}
+                    />
+                )}
+            </div>
+        );
+    }
+}
