@@ -91,10 +91,10 @@ export class Form extends React.Component<{}, FormState> {
     };
 
     renderForm() {
-        const res = [];
+        const fields = [];
         for (const fieldName in formFields) {
             const field = formFields[fieldName];
-            res.push(
+            fields.push(
                 <label key={field.fieldName}>
                     <span className="label">{field.label}</span>
                     {field.elementType === 'input' ? (
@@ -125,7 +125,7 @@ export class Form extends React.Component<{}, FormState> {
             <form>
                 <h1>Информация о пользователе</h1>
                 <Gapped gap={16} vertical>
-                    {res}
+                    {fields}
                     <Button use="primary" onClick={this.openModalOrHighlightErrors}>
                         Сохранить
                     </Button>
