@@ -20,7 +20,12 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-empty-function": "warn",
-    "prettier/prettier": "warn",
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "prefer-const": "warn",
     "react/prop-types": "off"
   },
@@ -42,9 +47,5 @@
       "version": "detect"
     }
   },
-  "plugins": [
-    "prettier",
-    "react",
-    "@typescript-eslint"
-  ]
+  "plugins": ["prettier", "react", "@typescript-eslint"]
 }
