@@ -13,7 +13,7 @@ import './style.css';
  *
  *     Импортируется компонент на страницу так:
  *
- *     import Button from '@skbkontur/react-ui/Button';
+ *     import { Button } from '@skbkontur/react-ui';
  *
  *     Используется компонент так:
  *
