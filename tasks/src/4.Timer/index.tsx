@@ -59,7 +59,7 @@ ReactDom.render(<Timer />, document.getElementById('app'));
 
 /**
     Подсказки:
-    - Функция setInterval регистрирует обработчик handler,
+    - Функция window.setInterval регистрирует обработчик handler,
       который будет вызываться не чаще, чем в заданное количество миллисекунд.
       Оформляется так:
           const intervalId = window.setInterval(handler, intervalInMilliseconds);

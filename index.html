@@ -1087,7 +1087,7 @@ class TimeDisplay extends React.Component {
     this.localTickInterval = null;
   }
   componentDidMount() {
-    this.localTickInterval = setInterval(() => {
+    this.localTickInterval = window.setInterval(() => {
       this.setState({ localTime: new Date() });
     }, 1000);
   }
@@ -1106,7 +1106,7 @@ function TimeDisplay() {
   const localTickInterval = useRef(null);
 
   useEffect(() => {
-    localTickInterval.current = setInterval(() => {
+    localTickInterval.current = window.setInterval(() => {
 	  setLocalTime(new Date());
 	}, 1000);
 

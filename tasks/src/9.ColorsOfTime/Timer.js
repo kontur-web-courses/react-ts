@@ -7,7 +7,7 @@ export default class Timer {
   addUpdated(handler) {
     this.handlers.push(handler);
     if (!this.tickInterval) {
-      this.tickInterval = setInterval(() => {
+      this.tickInterval = window.setInterval(() => {
         const currentTime = new Date();
         for (const handler of this.handlers) {
           handler(currentTime);
