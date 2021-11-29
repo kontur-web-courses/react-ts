@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
+import React, { ReactNode } from 'react';
 import ReactDom from 'react-dom';
 import './styles.css';
 
 /**
     1. Переделай renderPost в функциональный компонент Post
-       Для этого используй тип FC
 
-    2. ESLint настроен так, чтобы проверять переданные атрибуты.
-       У нас везде атрибуты — это строки. Сделай свойства author и time обязательными.
+    2. TypeScript проверяет переданные атрибуты.
+       У нас везде атрибуты — это строки. Сделай свойства author и time обязательными,
+       а message — необязательным.
 
     3. Сделай так, чтобы в author подставлялось значение <Неизвестный автор>,
        если атрибут не передали.
@@ -50,7 +50,7 @@ ReactDom.render(
 /**
     Подсказки к 1:
     - {renderMyComponent({a: 1, b: 'some'})} → <MyComponent a={1} b="some">
-    - Первый аргумент функции компонента обычно называется props
+    - Первый аргумент функции компонента обычно называется props, либо деконструируется
 
     Подсказки к 2:
     type MyComponentProps = {
@@ -59,11 +59,22 @@ ReactDom.render(
     }
 
     Подсказки к 3:
-    - const { b = 'defaultValue' } = props;
+    - В типе Props надо сделать необязательными все ключи,
+    для которых предполагается значение по умолчанию
+    type MyComponentProps = {
+        valueWithDefault?: string;
+    }
+    - Деконструкция параметра функции позволяет указывать значения по умолчанию
+    function MyComponent({valueWithDefault = 'по умолчанию'}: MyComponentProps)
 
     Подсказки к 4:
     - Дети — это вложенные узлы тэга.
       Пример с одним ребенком: <MyComponent>Значение</MyComponent>
     - Дети попадают в props в виде массива props.children.
-    const { children } = props;
+    - Для типизации Props нужно добавить опциональное свойство children с типом ReactNode
+    type MyComponentProps = {
+        requiredValue: string;
+        optionalValue?: string;
+        children?: ReactNode;
+    }
  */

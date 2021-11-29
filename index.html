@@ -606,21 +606,30 @@ function WarningBanner<Props>(props) {
 ```js
 function MyComponent(props: Props) {
   return (
-      <div>{props.a} {props.b}</div>
+      <div onClick={props.onFire}>{props.a} {props.b}</div>
   );
 }
 ```
 
 Properties — входные значения компонента
 
-Через функцию можно задать компоненты, которые зависят только от свойств.
+Через функцию можно задать компоненты, которые зависят только от свойств
+
+Описание типа свойств:
+```ts
+type Props = {
+  a: number;
+  b: string;
+  onFire?: () => void;
+};
+```
 
 ***
 
 ### Деструктуризация props
 
 ```js
-function MyComponent({a, b}): React.FC<Props> {
+function MyComponent({a, b}: Props) {
   return (
       <div>{a} {b}</div>
   );
@@ -632,36 +641,36 @@ function MyComponent({a, b}): React.FC<Props> {
 ### Children
 
 ```js
-function Parent(props): React.FC<Props> {
+function Parent(props: ParentProps) {
   return (<div className="green">{props.children}</div>);
 }
+```
+
+```ts
+type ParentProps = {
+  a: number;
+  b: string;
+  children?: ReactNode;
+};
 ```
 
 ***
 
 ### DefaultProps
 
+Рекомендуемый:
+```ts
+type MyComponentProps = {
+  b?: string;
+}
+
+function MyComponent({b = 'по умолчанию'}: MyComponentProps)
+```
+
+Изначальный:
 ```js
 MyComponent.defaultProps = {
-  b: 'default value'
-}
-```
-
-```js
-const MyFunctionalComponent: React.FC<Props> = (b = 'default value') => {
-  ...
-}
-```
-
-***
-
-### Типизация Props
-
-```ts
-interface Props {
-  a: number
-  b?: string
-  onFire?: () => void
+  b: 'по умолчанию'
 }
 ```
 
