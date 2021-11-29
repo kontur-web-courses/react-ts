@@ -91,7 +91,7 @@ npm run start
 
 ### Компонентный подход 😍
 
-```js
+```
 HTML+CSS+JS   |   HTML+CSS+JS   |   HTML+CSS+JS
 ```
 
@@ -548,7 +548,7 @@ The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
 ### Скрыть элемент
 
 ```js
-function WarningBanner<Props>(props) {
+function WarningBanner(props: Props) {
   if (!props.warn) {
     return null;
   }
@@ -629,7 +629,7 @@ type Props = {
 ### Деструктуризация props
 
 ```js
-function MyComponent({a, b}: Props) {
+function MyComponent({a, b}: Props): React.ReactNode {
   return (
       <div>{a} {b}</div>
   );
@@ -641,7 +641,7 @@ function MyComponent({a, b}: Props) {
 ### Children
 
 ```js
-function Parent(props: ParentProps) {
+function Parent(props: ParentProps): React.ReactNode {
   return (<div className="green">{props.children}</div>);
 }
 ```
@@ -763,7 +763,7 @@ render() {
   return <input value={this.state.value} onChange={this.handleChange} />;
 }
 
-handleChange = event => {
+handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   this.setState({
     value: event.target.value
   });
@@ -938,9 +938,9 @@ static getDerivedStateFromProps(nextProps, prevState)
 ### Создание ссылок
 
 ** Способ 16+ **
-```{js}
+```js
 constructor() {
-  this.myRef = React.createRef();
+  this.myRef = React.createRef<HTMLDivElement>();
 }
 
 render () {
@@ -950,7 +950,9 @@ render () {
 ```
 
 ** Хороший проверенный способ **
-```{js}
+```js
+myRef: HTMLDivElement | null
+
 constructor() {
   this.myRef = null;
 }
@@ -965,13 +967,13 @@ render () {
 
 ### Можно повешать на элемент или компонент
 
-```{js}
+```js
 <input ref={this.myRef} />
 
 ```
 
 
-```{js}
+```js
 <MyComponent ref={this.myRef} />
 
 ```
@@ -1021,7 +1023,7 @@ function MyFunctionalComponent() {
 
 ```js
 function MyFunctionalComponent({value}) {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div>
@@ -1624,7 +1626,7 @@ const EnhancedComponent = enhance(JustComponent); // enhance — это HOC
 
 ### Что происходит в enhance
 
-```{js}
+```js
 function enhance(WrappedComponent) { // Функция принимает компонент...
     class Enhanced extends React.Component { // ...создает новый компонент...
       render() {
@@ -1651,7 +1653,7 @@ function enhance(WrappedComponent) { // Функция принимает ком
    кроме специально переданных для обертки
 3. Задавать displayName: помогает при дебаге
 
-```{js}
+```js
 const wrappedName =
   WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
@@ -1664,11 +1666,11 @@ return Enhanced
 
 ### Forwarded Ref
 
-```{js}
+```js
 const someRef = React.createRef();
 <EnhancedButton label="Click Me" ref={someRef} />;
 ```
-```{js}
+```js
 function enhance(WrappedComponent) {
   class Enhanced extends React.Component {
       render() {
@@ -1694,17 +1696,17 @@ function enhance(WrappedComponent) {
 ### Примеры HOC
 
 Роутер
-```{js}
+```js
 const NavbarWithRouter = withRouter(Navbar);
 ```
 
 Relay
-```{js}
+```js
 const CommentWithRelay = Relay.createContainer(Comment, config);
 ```
 
 Redux connect
-```{js}
+```js
 const ConnectedComment = connect(commentSelector, commentActions)(CommentList);
 ```
 
@@ -1794,7 +1796,7 @@ function useMyOwnHook(initialValue) {
 ***
 
 Создание контекста:
-```{js}
+```js
 const CakeContext = React.createContext();
 ```
   
