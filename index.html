@@ -604,7 +604,7 @@ function WarningBanner(props: Props) {
 ### Функциональные компоненты
 
 ```js
-function MyComponent(props: Props) {
+function MyComponent(props: Props): ReactNode {
   return (
       <div onClick={props.onFire}>{props.a} {props.b}</div>
   );
@@ -612,8 +612,6 @@ function MyComponent(props: Props) {
 ```
 
 Properties — входные значения компонента
-
-Через функцию можно задать компоненты, которые зависят только от свойств
 
 Описание типа свойств:
 ```ts
@@ -629,7 +627,7 @@ type Props = {
 ### Деструктуризация props
 
 ```js
-function MyComponent({a, b}: Props): React.ReactNode {
+function MyComponent({a, b}: Props): ReactNode {
   return (
       <div>{a} {b}</div>
   );
@@ -641,7 +639,7 @@ function MyComponent({a, b}: Props): React.ReactNode {
 ### Children
 
 ```js
-function Parent(props: ParentProps): React.ReactNode {
+function Parent(props: ParentProps): ReactNode {
   return (<div className="green">{props.children}</div>);
 }
 ```
@@ -664,7 +662,7 @@ type MyComponentProps = {
   b?: string;
 }
 
-function MyComponent({b = 'по умолчанию'}: MyComponentProps)
+function MyComponent({b = 'по умолчанию'}: MyComponentProps): ReactNode
 ```
 
 Изначальный:
@@ -672,6 +670,23 @@ function MyComponent({b = 'по умолчанию'}: MyComponentProps)
 MyComponent.defaultProps = {
   b: 'по умолчанию'
 }
+```
+
+***
+
+### Определение через стрелочную функцию
+
+```js
+const MyComponent = ({a, b}: Props) => <div>{a} {b}</div>
+```
+```js
+const MyComponent: (props: Props) => ReactNode
+  = ({a, b}: Props) => <div>{a} {b}</div>
+```
+
+```js
+const MyComponent: React.FC<Props>
+    = ({a, b}: Props) => <div>{a} {b}</div>
 ```
 
 ***
@@ -1036,7 +1051,7 @@ function MyFunctionalComponent({value}) {
 }
 ```
 
-`useRef` — это аналог поля в классе-компоненте
+`useRef` — это аналог свойства объекта в классе-компоненте
 
 ***
 
@@ -1493,7 +1508,7 @@ shouldComponentUpdate(nextProps, nextState) {
 
 Чтобы использовать:
 ```js
-MyPureComponent extends React.PureComponent {
+class MyPureComponent extends React.PureComponent {
   ...
 }
 ```
@@ -1543,15 +1558,6 @@ class Parent extends React.Component {
 ```
 
 Так зачем мы пишем стрелочные-методы вида handleClick?
-
-***
-
-#### Как соотносятся функция-компонент и PureComponent?
-
-***
-
-- Чистые функции и чистые компоненты — это разные вещи
-- Только класс-компонент может быть PureComponent
 
 ***
 
