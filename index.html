@@ -1269,19 +1269,32 @@ static getDerivedStateFromProps(nextProps, prevState)
 
 ### Создание ссылок
 
-** Способ 16+ **
+** Для функциональных компонентов **
+```js
+function MyFunctionalComponent({value}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return <input type="text" ref={inputRef} />;
+}
+```
+
+** Для классов в React 16+ **
 ```js
 constructor() {
-  this.myRef = React.createRef<HTMLDivElement>();
+  this.divRef = React.createRef<HTMLDivElement>();
 }
 
 render () {
-  return <div ref={this.myRef} />
+  return <div ref={this.divRef} />
 }
-// После render ссылка окажется в this.myRef.current
+// После render ссылка окажется в this.divRef.current
 ```
 
-** Хороший проверенный способ **
+***
+
+### Создание ссылок
+
+** Способ "в лоб" **
 ```js
 myRef: HTMLDivElement | null
 

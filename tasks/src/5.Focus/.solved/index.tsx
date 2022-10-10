@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactDom from 'react-dom';
 import '../styles.css';
 
@@ -6,26 +6,16 @@ type InputFormRowProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
 };
 
-class InputFormRow extends React.Component<InputFormRowProps> {
-  private inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-
-  constructor(props: InputFormRowProps) {
-    super(props);
-  }
-
-  render() {
-    const { label, ...rest } = this.props;
-    return (
-      <div className="row pointer" onClick={this.handleClick}>
-        <div className="label">{label}</div>
-        <input ref={this.inputRef} {...rest} />
-      </div>
-    );
-  }
-
-  handleClick = () => {
-    this.inputRef.current?.focus?.();
-  };
+function InputFormRow(props: InputFormRowProps) {
+  const { label, ...rest } = props;
+  const inputRef = useRef<HTMLInputElement>();
+  const handleClick = () => inputRef.current?.focus?.();
+  return (
+    <div className="row pointer" onClick={handleClick}>
+      <div className="label">{label}</div>
+      <input ref={inputRef} {...rest} />
+    </div>
+  );
 }
 
 ReactDom.render(
