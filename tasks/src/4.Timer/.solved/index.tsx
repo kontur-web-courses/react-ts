@@ -1,68 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDom from 'react-dom';
-import '../styles.css';
+import './styles.css';
 
-type TimerState = {
-  timeVisible: boolean;
+const Timer: React.FC = () => {
+  const [timeVisible, setTimeVisible] = useState(false);
+
+  return (
+    <div className="page">
+      <input
+        className="button"
+        type="button"
+        value={timeVisible ? 'Скрыть' : 'Показать'}
+        onClick={() => {
+          setTimeVisible(!timeVisible);
+        }}
+      />
+      {timeVisible && <TimeDisplay />}
+    </div>
+  );
 };
 
-class Timer extends React.Component<{}, TimerState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = { timeVisible: true };
-  }
+const TimeDisplay: React.FC = () => {
+  const [localTime, setLocalTime] = useState(new Date());
+  const timer = useRef<number | null>(null);
 
-  render() {
-    const { timeVisible } = this.state;
-    return (
-      <div className="page">
-        <input
-          className="button"
-          type="button"
-          value={timeVisible ? 'Скрыть' : 'Показать'}
-          onClick={() => {
-            this.setState({ timeVisible: !timeVisible });
-          }}
-        />
-        {this.state.timeVisible && <TimeDisplay />}
-      </div>
-    );
-  }
-}
-
-type TimeDisplayState = {
-  localTime: Date;
-};
-
-class TimeDisplay extends React.Component<{}, TimeDisplayState> {
-  private localTickInterval: number | null = null;
-
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      localTime: new Date()
-    };
-  }
-
-  componentDidMount() {
-    this.localTickInterval = window.setInterval(() => {
+  useEffect(() => {
+    timer.current = window.setInterval(() => {
       console.log('tick');
-      this.setState({
-        localTime: new Date()
-      });
+      setLocalTime(new Date());
     }, 1000);
-  }
 
-  componentWillUnmount() {
-    if (this.localTickInterval) {
-      window.clearInterval(this.localTickInterval);
-      this.localTickInterval = null;
-    }
-  }
+    return () => window.clearInterval(Number(timer.current));
+  }, []);
 
-  render() {
-    return <div className="time">{this.state.localTime.toLocaleTimeString()}</div>;
-  }
-}
+  return <div className="time">{localTime.toLocaleTimeString()}</div>;
+};
 
 ReactDom.render(<Timer />, document.getElementById('app'));

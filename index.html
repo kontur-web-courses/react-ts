@@ -1192,6 +1192,7 @@ componentWillUnmount()
 
 ```js
 // Error Handling
+static getDerivedStateFromError()
 componentDidCatch()
 ```
 
@@ -1228,26 +1229,65 @@ componentWillUnmount()
 
 ***
 
+<a href="https://codesandbox.io/s/condescending-haze-lnj603?file=/src/Counter.js" target="_blank" rel="noopener noreferrer">Демо на функциональном компоненте</a>
+
+***
+
 ### Задача 4.1. Timer
 
 ***
 
-### getDerivedStateFromProps
+<!--### getDerivedStateFromProps-->
 
-Создан, чтобы обновлять state по новым props
+<!--Создан, чтобы обновлять state по новым props-->
+
+<!--```js-->
+<!--// Mounting-->
+<!--static getDerivedStateFromProps(nextProps, prevState)-->
+<!--```-->
+
+<!--```js-->
+<!--// Updating-->
+<!--static getDerivedStateFromProps(nextProps, prevState)-->
+<!--```-->
+
+<!--Должен возвращать только измененные свойства state-->
+<!--Если возвращает null, то обновлять state не нужно-->
+
+<!--***-->
+
+### componentDidCatch
+Позволит поймать ошибку во время рендеринга, внутри метода жизненного цикла или конструктора дочерних компонентов.
+Нет аналога на хуках!
 
 ```js
-// Mounting
-static getDerivedStateFromProps(nextProps, prevState)
-```
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
-```js
-// Updating
-static getDerivedStateFromProps(nextProps, prevState)
-```
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
 
-Должен возвращать только измененные свойства state
-Если возвращает null, то обновлять state не нужно
+  render() {
+    if (this.state.hasError) {
+      return <h1>Что-то пошло не так</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+
+ReactDOM.render(
+  <ErrorBoundary>
+    <SomeChildComponent/>
+  </ErrorBoundary>,
+  document.getElementById('root')
+)
+
+```
 
 </script></section>
 
