@@ -20,7 +20,7 @@
 		.fragment-container {
 			position: relative;
 		}
-		
+
 		.fragment-container .fragment {
 			position: absolute;
 			top: 0px;
@@ -33,7 +33,7 @@
           display: block;
         }
     </style>
-	
+
 	<title>React</title>
 </head>
 <body>
@@ -123,7 +123,7 @@ function ButtonWithHandle() {
     function handleClick() {
 	    ...
 	}
-	
+
 	return <input type="button" onClick={handleClick}/>
 }
 ```
@@ -396,13 +396,13 @@ _reactDom2.default.render(mydom, document.getElementById('app'));
                 },
                 "_owner": null,
                 "_store": {
-                  
+
                 }
               }
             },
             "_owner": null,
             "_store": {
-              
+
             }
           },
           {
@@ -416,20 +416,20 @@ _reactDom2.default.render(mydom, document.getElementById('app'));
             },
             "_owner": null,
             "_store": {
-              
+
             }
           }
         ]
       },
       "_owner": null,
       "_store": {
-        
+
       }
     }
   },
   "_owner": null,
   "_store": {
-    
+
   }
 }
 ```
@@ -538,7 +538,7 @@ The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
 ```
 
 **&&**
-```js  
+```js
 {unreadMessages.length > 0 &&
   <h2>You have {unreadMessages.length} unread messages.</h2>}
 ```
@@ -695,45 +695,43 @@ const MyComponent: React.FC<Props>
 
 ***
 
-### Классы-компоненты
+<!--### Классы-компоненты-->
 
-```js
-class MyComponent extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
-  
-  render() {
-    // Деструктурирующее присваивание
-    const { a, b } = this.props;
-    return (
-	  <div>{a} {b}</div>
-    );
-  }
-}
-```
+<!--```js-->
+<!--class MyComponent extends React.Component<Props> {-->
+<!--  constructor(props: Props) {-->
+<!--    super(props);-->
+<!--  }-->
+<!--  -->
+<!--  render() {-->
+<!--    // Деструктурирующее присваивание-->
+<!--    const { a, b } = this.props;-->
+<!--    return (-->
+<!--	  <div>{a} {b}</div>-->
+<!--    );-->
+<!--  }-->
+<!--}-->
+<!--```-->
 
-***
+<!--***-->
 
 ### Компоненты с состоянием
 
 ```js
-class Counter extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-	this.state = { value: props.defaultValue, checked: false };
-  }
-  render() {
-    return <div onClick={this.handleClick}
-                className={this.state.checked && 'checked'}
-           >{this.state.value}</div>;
-  }
-  handleClick = () => {
-    this.setState({
-	  value: this.state.value + this.props.step
-	});
-  }
-}
+const Counter: React.FC<Props> = ({ defaultValue, step }) => {
+  const [value, setValue] = useState(defaultValue);
+  const [checked, setChecked] = useState(false);
+
+  const handleClick = () => {
+    setValue(value + step);
+  };
+
+  return (
+    <div onClick={handleClick} className={checked && 'checked'}>
+      {value}
+    </div>
+  );
+};
 ```
 
 ***
@@ -741,18 +739,13 @@ class Counter extends React.Component<Props, State> {
 ### Нюансы
 
 ```js
-// Стрелочные функции в JS берут this там, где создаются,
-// поэтому их можно безопасно передавать в onClick
-handleClick = () => {
-  // В state есть value и checked, но передаем мы одно — только оно и обновится
-  this.setState({
-    value: this.state.value + this.props.step
-  });
-  // Здесь this.state.value еще имеет старое значение.
+const handleClick = () => {
+    setValue(value + step);
+    // value еще имеет старое значение.
 }
 ```
 <br>
-Нельзя просто взять и написать `this.state.value = newValue`
+Нельзя просто взять и написать `value = newValue`
 React это не отследит и не отрисует изменения
 
 ***
@@ -761,33 +754,32 @@ React это не отследит и не отрисует изменения
 
 ***
 
-### Functional vs Class
+<!--### Functional vs Class-->
 
-- Изначально классы-компоненты давали больше возможностей, чем функции-компоненты,
-но после появления хуков возможности стали одинаковыми
-- Функции-компоненты однозначно удобны для создания маленьких компонентов
-- Для больших компонентов выбор в пользу классов-компонентов не очевиден
+<!-- - Изначально классы-компоненты давали больше возможностей, чем функции-компоненты,-->
+<!--но после появления хуков возможности стали одинаковыми-->
+<!-- - Функции-компоненты однозначно удобны для создания маленьких компонентов-->
+<!-- - Для больших компонентов выбор в пользу классов-компонентов не очевиден-->
 
-***
+<!--***-->
 
 ### Управляемые vs Неуправляемые
 
 **Управляемый input**
 ```js
-render() {
-  return <input value={this.state.value} onChange={this.handleChange} />;
-}
+const ControllableInput = () => {
+  const [value, setValue] = useState(defaultValue);
 
-handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  this.setState({
-    value: event.target.value
-  });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>)
+    =>  setValue(event.target.value);
+
+  return <input value={value} onChange={handleChange} />;
 }
 ```
 
 **Неуправляемый input**
 ```js
-<input defaultValue="default text"/>;
+const UncontrollableInput = () => <input defaultValue="default text"/>;
 ```
 
 Если в `value` управляемого передать `undefined`,
@@ -795,7 +787,7 @@ handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 ***
 
-### Stateless vs Statefull
+### Stateless vs Stateful
 
 
 
@@ -1222,7 +1214,7 @@ function MyFunctionalComponent() {
 
     return (
         <>
-            [1, 2, 3, 4, 5].map(value => 
+            [1, 2, 3, 4, 5].map(value =>
               (<button onClick={logClick}>Кнопка №{value}</button>)
             )
         </>
@@ -1390,7 +1382,7 @@ class Parent extends React.Component {
   - Child получает новые свойства
   - Child render
     - ...
-	
+
 *Но возможны варианты!*
 
 ***
@@ -1683,7 +1675,7 @@ function enhance(WrappedComponent) {
         const {forwardedRef, ...rest} = this.props;
         return <WrappedComponent ref={forwardedRef} {...rest} />
       }
-  }  
+  }
   // React не передает значение атрибута "ref" в props обычных компонентов.
   // Но компонент React.forwardRef дает нам доступ к значению атрибута "ref"
   // и теперь это значение можно передать компоненту под другим именем.
@@ -1805,7 +1797,7 @@ function useMyOwnHook(initialValue) {
 ```js
 const CakeContext = React.createContext();
 ```
-  
+
 Поставка значения:
 ```html
 <CakeContext.Provider value={cheeseCake}>
@@ -1865,7 +1857,7 @@ function Glutton() {
 <a href="http://bit.ly/kontur-courses-feedback">http://bit.ly/kontur-courses-feedback</a>
 
 </script></section>
-			
+
 </div></div>
 </body>
 </html>

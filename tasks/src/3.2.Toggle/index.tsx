@@ -13,26 +13,18 @@ type ToggleProps = {
   onChange(value: boolean): void;
 };
 
-type ToggleState = {};
-
-class Toggle extends React.Component<ToggleProps, ToggleState> {
-  // constructor(props: ToggleProps) {
-  // }
-
-  render() {
-    const checked = true;
-    return (
-      <span className={'container' + (checked ? ' isChecked' : '')} onClick={this.handleClick}>
-        <span className="handle">
-          <div className="bg" />
-          <span className="hinge" />
-        </span>
+const Toggle: React.FC<ToggleProps> = (props) => {
+  const checked = true;
+  const handleClick = () => {};
+  return (
+    <span className={'container' + (checked ? ' isChecked' : '')} onClick={handleClick}>
+      <span className="handle">
+        <div className="bg" />
+        <span className="hinge" />
       </span>
-    );
-  }
-
-  handleClick = () => {};
-}
+    </span>
+  );
+};
 
 ReactDom.render(
   <div className="page">
@@ -43,7 +35,6 @@ ReactDom.render(
 
 /**
     Подсказки:
-    - Начальное состояние компонента хранится в this.state и обычно инициируется в конструкторе.
-    - Не забудь добавить super(props) первой строчкой конструктора, чтобы вызвать конструктор базового типа.
-    - this.setState({property: value}) обновляет часть состояния и инициирует перерисовку.
+    - Начальное состояние компонента можно передать в вызов функции useState
+    - useState возвращает массив из текущего состояния и функции для его обновления
  */

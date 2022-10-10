@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDom from 'react-dom';
 import './styles.css';
 
@@ -10,48 +10,35 @@ import './styles.css';
 
 const RUBLES_IN_ONE_EURO = 70;
 
-class MoneyConverter extends React.Component {
-  render() {
-    return (
-      <div className="root">
-        <div className="form">
-          <h2>Конвертер валют</h2>
-          <div>
-            <span>&#8381;</span>
-            <Money />
-            &mdash;
-            <Money />
-            <span>&euro;</span>
-          </div>
+const MoneyConverter: React.FC = () => {
+  return (
+    <div className="root">
+      <div className="form">
+        <h2>Конвертер валют</h2>
+        <div>
+          <span>&#8381;</span>
+          <Money />
+          &mdash;
+          <Money />
+          <span>&euro;</span>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 type MoneyProps = {};
 
-type MoneyState = {
-  value: number;
-};
+const Money: React.FC<MoneyProps> = () => {
+  const [value, setValue] = useState(0);
 
-class Money extends React.Component<MoneyProps, MoneyState> {
-  constructor(props: MoneyProps) {
-    super(props);
-    this.state = {
-      value: 0
-    };
-  }
-
-  render() {
-    return <input type="text" value={this.state.value} onChange={this.handleChangeValue} />;
-  }
-
-  handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = extractNumberString(event.target.value);
-    this.setState({ value });
+    setValue(value);
   };
-}
+
+  return <input type="text" value={value} onChange={handleChangeValue} />;
+};
 
 function extractNumberString(value: string): number {
   const str = value.replace(/^0+/g, '').replace(/[^.0-9]/g, '');
@@ -67,5 +54,4 @@ ReactDom.render(<MoneyConverter />, document.getElementById('app'));
       чтобы конвертер работал, нужно уметь обновлять значение извне, поэтому нужно получать его из props.
     - В MoneyConverter наоборот надо создать состояние, которое будет хранить значения в обеих валютах.
       Таким образом ты сделаешь Lift State Up.
-    - Заметь, что компонент Money теперь не содержит состояние и его можно переделать в функциональный компонент.
  */

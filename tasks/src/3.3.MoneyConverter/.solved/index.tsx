@@ -1,66 +1,51 @@
-import React, { FC } from 'react';
+import React, { useState } from 'react';
 import ReactDom from 'react-dom';
-import '../styles.css';
+import './styles.css';
 
 const RUBLES_IN_ONE_EURO = 70;
 
-type MoneyConverterState = {
-  valueInRubles: number;
-  valueInEuros: number;
-};
+const MoneyConverter: React.FC = () => {
+  const [valueInRubles, setValueInRubles] = useState(0);
+  const [valueInEuros, setValueInEuros] = useState(0);
 
-class MoneyConverter extends React.Component<{}, MoneyConverterState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      valueInRubles: 0,
-      valueInEuros: 0
-    };
-  }
+  const handleRublesChange = (newValueInRubles: number) => {
+    setValueInRubles(newValueInRubles);
+    setValueInEuros(newValueInRubles / RUBLES_IN_ONE_EURO);
+  };
 
-  render() {
-    return (
-      <div className="root">
-        <div className="form">
-          <h2>Конвертер валют</h2>
-          <div>
-            <span>&#8381;</span>
-            <Money value={this.state.valueInRubles} onChange={this.handleChangeRubles} />
-            &mdash;
-            <Money value={this.state.valueInEuros} onChange={this.handleChangeEuros} />
-            <span>&euro;</span>
-          </div>
+  const handleEurosChange = (newValueInEuros: number) => {
+    setValueInEuros(newValueInEuros);
+    setValueInRubles(newValueInEuros * RUBLES_IN_ONE_EURO);
+  };
+
+  return (
+    <div className="root">
+      <div className="form">
+        <h2>Конвертер валют</h2>
+        <div>
+          <span>&#8381;</span>
+          <Money value={valueInRubles} setValue={handleRublesChange} />
+          &mdash;
+          <Money value={valueInEuros} setValue={handleEurosChange} />
+          <span>&euro;</span>
         </div>
       </div>
-    );
-  }
-
-  handleChangeRubles = (value: number) => {
-    this.setState({
-      valueInRubles: value,
-      valueInEuros: Math.round((100 * value) / RUBLES_IN_ONE_EURO) / 100
-    });
-  };
-
-  handleChangeEuros = (value: number) => {
-    this.setState({
-      valueInRubles: Math.round(100 * value * RUBLES_IN_ONE_EURO) / 100,
-      valueInEuros: value
-    });
-  };
-}
+    </div>
+  );
+};
 
 type MoneyProps = {
   value: number;
-  onChange(value: number): void;
+  setValue: (value: number) => void;
 };
 
-const Money: FC<MoneyProps> = ({ value, onChange }) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(extractNumberString(event.target.value));
+const Money: React.FC<MoneyProps> = ({ value, setValue }) => {
+  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = extractNumberString(event.target.value);
+    setValue(value);
   };
 
-  return <input type="text" value={value} onChange={handleChange} />;
+  return <input type="text" value={value} onChange={handleChangeValue} />;
 };
 
 function extractNumberString(value: string): number {
