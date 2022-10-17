@@ -1,3 +1,6 @@
+import { Button, Gapped, Input, Modal, Select } from '@skbkontur/react-ui';
+import React, { useState } from 'react';
+import ReactDom from 'react-dom';
 import './style.css';
 
 /**
@@ -56,4 +59,148 @@ import './style.css';
  *      Придумай, как избежать излишнего дублирования.
  */
 
-console.log('Hi from script!');
+// Выполнены задания 1-8
+
+const fieldRepo : {[key: string] : string}= {
+    'Имя': '',
+    'Фамилия': '',
+    'Город': '',
+}
+
+ const Form = () => {
+    let [isOpened, setOpenedState] = useState(false);
+    
+    let [name, setName] = useState('');
+    let [surname, setSurname] = useState('');
+    let [city, setCity] = useState('');
+
+    let [nameEmpty, setNameEmpty] = useState(false);
+    let [surnameEmpty, setSurnameEmpty] = useState(false);
+
+    const openModal = () => {setOpenedState(true)};
+    const closeModal = () => {setOpenedState(false)};
+
+    let [changeMessage, setChangeMessage] = useState(Array<string>());
+    const saveChanges = () => {
+        if (!name)
+            setNameEmpty(true);
+        if (!surname)
+            setSurnameEmpty(true);
+        
+        if (!(name && surname))
+            return;
+
+        const newChangeMessage = [
+            add_if_updated('Имя', name),
+            add_if_updated('Фамилия', surname),
+            add_if_updated('Город', city), 
+        ];
+
+        setChangeMessage(newChangeMessage);
+        openModal();
+    };
+
+    const add_if_updated = (field_name: string, new_value: string) => {
+        const old_value = fieldRepo[field_name];
+        fieldRepo[field_name] = new_value;
+        if (old_value && old_value !== new_value){
+            return `${field_name}: Было ${old_value}, стало ${new_value}`;
+        }
+        return ''
+    };
+
+    return (
+        <div className='form'>
+            <Gapped vertical gap={20}>
+                <p className="form-title">Информация о пользователе</p>
+                <InputRow 
+                title='Имя' 
+                placeholder='Введите имя пользователя'
+                onInputChange={value => { setName(value); setNameEmpty(false); }}
+                isError={nameEmpty}
+                />
+
+                <InputRow 
+                title='Фамилия' 
+                placeholder='Введите фамилию пользователя'
+                onInputChange={value => { setSurname(value); setSurnameEmpty(false); }}
+                isError={surnameEmpty}
+                />
+
+                <SelectRow 
+                title='Город'
+                onInputChange={value => {setCity(value) }}
+                />
+                <Button use="primary" onClick={saveChanges}>Сохранить</Button>
+            </Gapped>
+        {isOpened && <ModalOnSave close={closeModal} changeMessage={changeMessage}/>}
+        </div>
+    );
+ } 
+
+const ModalOnSave = ({close, changeMessage} : ModeOnSaveType) => (
+    <Modal onClose={close}>
+        <Modal.Header>Пользователь сохранен</Modal.Header>
+        <Modal.Body>
+            { changeMessage.map(data => <p>{data}</p>) }
+        </Modal.Body>
+        <Modal.Footer>
+            <Button onClick={close}>Закрыть</Button>
+        </Modal.Footer>
+    </Modal>
+)
+
+const InputRow = ({title, placeholder='', onInputChange, isError} : RowType) => {
+      return (
+        <div className='inputRow'>
+            <Gapped gap={20}>
+                <p className='title'>{title}</p>
+                <div>
+                    <Input placeholder={placeholder} onChange={(e) => onInputChange(e.target.value)}></Input>
+                    {isError && <p className='error-message'>Заполните поле</p>}
+                </div>
+            </Gapped>
+            
+        </div>
+    )
+} 
+
+const SelectRow = ({title, onInputChange} : SelectType) => { 
+    const cities = ['Москва', 'Санкт-Петербург', 'Екатеринбург'];
+    return (
+    <div className='inputRow'>
+        <Gapped gap={20}>
+            <p className='title'>{title}</p>
+            {/* Почему-то здесь ругается IDE, хотя по документации должно быть всё ок. Код запускается и работает*/}
+            <Select items={cities} placeholder='Выберете город' onValueChange={(value: string) => { onInputChange(value)}}></Select>
+        </Gapped>
+    </div>
+    )
+}
+
+type InputType = {
+    title: string,
+    onInputChange: (value: string) => void,
+}
+
+interface RowType extends InputType {
+    placeholder?: string,
+    isError: boolean,
+};
+
+interface SelectType extends InputType {
+    title: string,
+};
+
+type ModeOnSaveType = {
+    close: () => void,
+    changeMessage: string[],
+};
+
+
+ReactDom.render(
+    <Form></Form>,
+    document.getElementById('someId')
+);
+
+
