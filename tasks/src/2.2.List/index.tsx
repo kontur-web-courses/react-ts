@@ -12,6 +12,7 @@ import './styles.css';
  */
 
 type Post = {
+  id: number;
   author: string;
   time: string;
   message: string;
@@ -19,16 +20,19 @@ type Post = {
 
 const posts: Post[] = [
   {
+    id: 1,
     author: 'Парень не промах',
     time: '2 часа назад',
     message: 'Попробую с удовольствием ;)'
   },
   {
+    id: 2,
     author: 'Милая девушка',
     time: '3 часа назад',
     message: 'Можно использовать для выпекания чизкейков :)'
   },
   {
+    id: 3,
     author: 'Скупец',
     time: 'вчера',
     message: 'Цену-то загнули!'
@@ -37,7 +41,7 @@ const posts: Post[] = [
 
 function renderPost(post: Post) {
   return (
-    <div className="post">
+    <div key={post.id} className="post">
       <div className="postHeader">
         <span className="postAuthor">{post.author}</span>
         <br />
@@ -49,22 +53,14 @@ function renderPost(post: Post) {
 }
 
 function renderAuthors(posts: Post[]) {
-  return (
-    <div className="authors">
-      <span>{posts[0].author}</span>
-      <span>{posts[1].author}</span>
-      <span>{posts[2].author}</span>
-    </div>
-  );
+  const authors = [];
+  for (const post of posts) authors.push(<span key={post.id}>{post.author}</span>);
+  return <div className="authors">{authors}</div>;
 }
 
 ReactDom.render(
   <div className="page">
-    <div className="posts">
-      {renderPost(posts[0])}
-      {renderPost(posts[1])}
-      {renderPost(posts[2])}
-    </div>
+    <div className="posts">{posts.map(post => renderPost(post))}</div>
     {renderAuthors(posts)}
   </div>,
   document.getElementById('app')
