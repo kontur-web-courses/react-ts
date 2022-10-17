@@ -1,27 +1,45 @@
-import React, { Dispatch, ReactComponentElement, ReactNode, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Gapped, Input, Modal, Select } from '@skbkontur/react-ui';
+import { ChangedData } from './ChangedData';
+
+type FormData = {
+    name: string;
+    lastName: string;
+    city: string;
+};
+
+type PageData = {
+    modalHidden: boolean;
+    saved: FormData;
+    current: FormData;
+};
+
+const defaultFormData = {
+    name: '',
+    lastName: '',
+    city: ''
+};
 
 const cities = ['Екатеринбург', 'Анти-Екатеринбург'];
 
-function toggleModal(modalHidden: boolean, setModalHidden: (a: boolean) => void) {
-    setModalHidden(!modalHidden);
+function showModal(data: PageData, setData: (value: PageData) => void) {
+    setData({ ...data, modalHidden: false });
 }
 
-function handleChange(value: string, name: string[], setName: Dispatch<SetStateAction<string[]>>) {
-    setName(name.concat(value));
+function hideModal(data: PageData, setData: (value: PageData) => void) {
+    setData({ ...data, modalHidden: true, saved: data.current });
 }
 
-type ChangedData = { title: string; value: string[] };
-
-const ChangedData = ({ title, value }: ChangedData) => (
-    <p style={{ display: value.length < 2 ? 'none' : 'flex' }}>
-        {title}: было {value[value.length - 2]} стало {value[value.length - 1]}
-    </p>
-);
+function handleChange(data: PageData, setData: (value: PageData) => void, value: string, field: string) {
+    setData({ ...data, current: { ...data.current, [field]: value } });
+}
 
 export const Form = () => {
-    const [modalHidden, setModalHidden] = useState(true);
-    const [name, setName] = useState<string[]>([]);
+    const [data, setData] = useState({
+        modalHidden: true,
+        saved: { ...defaultFormData },
+        current: { ...defaultFormData }
+    });
     return (
         <div>
             <h3>Информация о пользователе</h3>
@@ -31,38 +49,40 @@ export const Form = () => {
                         <div className="label">Имя</div>
                         <Input
                             placeholder="Введите имя пользователя"
-                            onValueChange={value => handleChange(value, name, setName)}
+                            onValueChange={(value: string) => handleChange(data, setData, value, 'name')}
                         />
                     </label>
-                    {/*<label>*/}
-                    {/*    <div className="label">Фамилия</div>*/}
-                    {/*    <Input*/}
-                    {/*        placeholder="Введите фамилию пользователя"*/}
-                    {/*        onValueChange={value => handleChange(value)}*/}
-                    {/*    />*/}
-                    {/*</label>*/}
+                    <label>
+                        <div className="label">Фамилия</div>
+                        <Input
+                            placeholder="Введите фамилию пользователя"
+                            onValueChange={(value: string) => handleChange(data, setData, value, 'lastName')}
+                        />
+                    </label>
                     <label>
                         <div className="label">Город</div>
-                        <Select
+                        <Select<string>
                             placeholder="Выберите город"
                             items={cities}
-                            // onValueChange={(value) => handleChange(value)}
+                            onValueChange={(value: string) => handleChange(data, setData, value, 'city')}
                         />
                     </label>
-                    <Button use="primary" onClick={() => toggleModal(modalHidden, setModalHidden)}>
+                    <Button use="primary" onClick={() => showModal(data, setData)}>
                         Сохранить
                     </Button>
                 </Gapped>
             </form>
-            {!modalHidden && (
-                <Modal>
+            {!data.modalHidden && (
+                <Modal onClose={() => hideModal(data, setData)}>
                     <Modal.Header>Пользователь сохранен</Modal.Header>
                     <Modal.Body>
                         <p>Измененные данные:</p>
-                        <ChangedData title="Имя" value={name} />
+                        <ChangedData title="Имя" oldValue={data.saved.name} newValue={data.current.name} />
+                        <ChangedData title="Фамилия" oldValue={data.saved.lastName} newValue={data.current.lastName} />
+                        <ChangedData title="Город" oldValue={data.saved.city} newValue={data.current.city} />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={() => toggleModal(modalHidden, setModalHidden)}>Закрыть</Button>
+                        <Button onClick={() => hideModal(data, setData)}>Закрыть</Button>
                     </Modal.Footer>
                 </Modal>
             )}
