@@ -23,7 +23,7 @@ const defaultFormData = {
 const cities = ['Екатеринбург', 'Анти-Екатеринбург'];
 
 function showModal(data: PageData, setData: (value: PageData) => void) {
-    setData({ ...data, modalHidden: false });
+    if (Object.values(data.current).every(element => element)) setData({ ...data, modalHidden: false });
 }
 
 function hideModal(data: PageData, setData: (value: PageData) => void) {
