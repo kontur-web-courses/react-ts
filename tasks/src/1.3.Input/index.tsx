@@ -8,7 +8,7 @@ import './styles.css';
 
 let userName = 'По умолчанию';
 
-let mydom = (
+const mydom = (
   <div className="root">
     <div className="form">
       <div style={{ paddingRight: '10px', display: 'inline-block' }}>
@@ -18,10 +18,7 @@ let mydom = (
         id="name"
         type="text"
         size={39}
-        onChange={event => {
-          const target = event.target;
-          debugger;
-        }}
+        onChange={event => (userName = event.target.value)}
         onBlur={() => alert(`userName: ${userName}`)}
       />
     </div>

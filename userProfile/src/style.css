@@ -1,3 +1,13 @@
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
 }
+
+.label {
+    display: inline-block;
+    width: 100px;
+}
+
+.right-e {
+    width: 150px;
+    height: 30px;
+}
