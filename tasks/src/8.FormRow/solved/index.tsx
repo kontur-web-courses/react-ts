@@ -1,47 +1,43 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import '../styles.css';
 import Toggle from '../Toggle';
+import Input from '../Input';
 
-function createFormRow(WrappedComponent) {
-  class FormRow extends React.Component {
-    constructor(props) {
-      super(props);
-    }
+type FormRowProps = { label: string; forwardedRef?: React.ForwardedRef<unknown> };
 
-    render() {
-      const { label, forwardedRef, ...rest } = this.props;
-      return (
-        <div className="row">
-          <div className="label">{label}</div>
-          <WrappedComponent ref={forwardedRef} {...rest} />
-        </div>
-      );
-    }
-  }
-
-  FormRow.propTypes = {
-    label: PropTypes.string.isRequired,
-    forwardedRef: PropTypes.object
+function createFormRow<T extends {}>(WrappedComponent: React.ComponentType<T>) {
+  const FormRow = (props: T & FormRowProps) => {
+    const { label, forwardedRef } = props;
+    return (
+      <div className="row">
+        <div className="label">{label}</div>
+        <WrappedComponent {...props} ref={forwardedRef} />
+      </div>
+    );
   };
 
   const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
   FormRow.displayName = `FormRow(${wrappedName})`;
 
-  const forward = (props, ref) => <FormRow {...props} forwardedRef={ref} />;
-  forward.displayName = FormRow.displayName;
-  return React.forwardRef(forward);
+  // forward.displayName = FormRow.displayName;
+  return React.forwardRef((props: React.ComponentProps<typeof FormRow>, ref) => (
+    <FormRow {...props} forwardedRef={ref} />
+  ));
 }
 
 const InputFormRow = createFormRow(Input);
 const ToggleFormRow = createFormRow(Toggle);
 
-class Form extends React.Component {
-  constructor() {
-    super();
+type FormState = {
+  opened: boolean;
+};
 
-    this.firstRowRef = React.createRef();
+class Form extends React.Component<{}, FormState> {
+  private firstRowRef = React.createRef<Input>();
+
+  constructor(props: {}) {
+    super(props);
 
     this.state = {
       opened: false
@@ -106,13 +102,9 @@ class Form extends React.Component {
     if (this.state.opened) {
       // Проверка перед вызовом нужна,
       // пока this.firstRowRef не устанавливается корректно.
-      this.firstRowRef.current.focus && this.firstRowRef.current.focus();
+      this.firstRowRef?.current?.focus?.();
     }
   };
 }
-
-Form.propTypes = {
-  user: PropTypes.object
-};
 
 ReactDom.render(<Form />, document.getElementById('app'));

@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import './styles.css';
-import Input from './Input';
+import Input, { InputProps } from './Input';
 import Toggle from './Toggle';
 
 /**
@@ -40,16 +39,14 @@ import Toggle from './Toggle';
        для всех возможных WrappedComponent, с которыми будет использоваться HOC.
  */
 
-class Form extends React.Component {
-  constructor() {
-    super();
+type FormState = { opened: boolean };
 
-    this.firstRowRef = React.createRef();
+class Form extends React.Component<{}, FormState> {
+  private firstRowRef = React.createRef<Input>();
 
-    this.state = {
-      opened: false
-    };
-  }
+  state = {
+    opened: false
+  };
 
   render() {
     const { opened } = this.state;
@@ -81,7 +78,7 @@ class Form extends React.Component {
     return (
       <div className="form">
         <form>
-          <InputFormRow ref={this.firstRowRef} label="Фамилия" type="text" />
+          <InputFormRow label="Фамилия" type="text" />
           <InputFormRow label="Имя" type="text" />
           <InputFormRow label="Отчество" type="text" />
           <ToggleFormRow label="Вегетарианец" />
@@ -109,20 +106,14 @@ class Form extends React.Component {
     if (this.state.opened) {
       // Проверка перед вызовом нужна,
       // пока this.firstRowRef не устанавливается корректно.
-      this.firstRowRef.current.focus && this.firstRowRef.current.focus();
+      this.firstRowRef.current?.focus && this.firstRowRef.current.focus();
     }
   };
 }
 
-Form.propTypes = {
-  user: PropTypes.object
-};
+type FormRowProps = { label: string };
 
-class InputFormRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class InputFormRow extends React.Component<FormRowProps & InputProps> {
   render() {
     const { label, ...rest } = this.props;
     return (
@@ -134,15 +125,7 @@ class InputFormRow extends React.Component {
   }
 }
 
-InputFormRow.propTypes = {
-  label: PropTypes.string.isRequired
-};
-
-class ToggleFormRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class ToggleFormRow extends React.Component<FormRowProps> {
   render() {
     const { label, ...rest } = this.props;
     return (
@@ -153,10 +136,6 @@ class ToggleFormRow extends React.Component {
     );
   }
 }
-
-ToggleFormRow.propTypes = {
-  label: PropTypes.string.isRequired
-};
 
 ReactDom.render(<Form />, document.getElementById('app'));
 

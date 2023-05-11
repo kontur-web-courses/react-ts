@@ -1,23 +1,24 @@
 import React from 'react';
 import './toggle.css';
 
-export default class Toggle extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      checked: false
-    };
-    this.ref = React.createRef();
-  }
+type ToggleState = { checked: boolean };
+
+export type ToggleProps = React.ComponentPropsWithoutRef<'input'>;
+
+export default class Toggle extends React.Component<ToggleProps, ToggleState> {
+  private ref = React.createRef<HTMLSpanElement>();
+
+  state = {
+    checked: false
+  };
 
   render() {
     const { checked } = this.state;
     return (
       <span
         ref={this.ref}
-        tabIndex="0"
+        tabIndex={0}
         className={'container' + (checked ? ' isChecked' : '')}
-        onKeyPress={this.handleChange}
         onClick={this.handleClick}
       >
         <span className="handle">
@@ -35,6 +36,6 @@ export default class Toggle extends React.Component {
   };
 
   focus = () => {
-    this.ref.current.focus();
+    this.ref.current?.focus();
   };
 }
