@@ -100,7 +100,7 @@ class UserTable extends React.PureComponent<UserTableProps> {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users?.map(user => (
               <UserTableRow user={user} key={user.id} onEditUser={onEditUser} />
             ))}
           </tbody>
@@ -112,13 +112,13 @@ class UserTable extends React.PureComponent<UserTableProps> {
 
 interface UserTableProps {
   users?: User[];
-  onEditUser?: (user: User) => void;
+  onEditUser: (user: User) => void;
   onAddUser?: () => void;
 }
 
 interface UserTableState {
   users: User[];
-  editingUser: User;
+  editingUser: User | null;
 }
 
 class UserTableRow extends React.Component<UserTableRowProps> {
@@ -130,14 +130,14 @@ class UserTableRow extends React.Component<UserTableRowProps> {
     logEvent('UserTableRow\t will unmount with id=' + this.props.user.id);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: UserTableRowProps) {
     if (!this.props) {
       return true;
     }
     const prevUser = this.props.user;
     const nextUser = nextProps.user;
     return (
-      prevUser.surname !== nextUser.surname ||
+      prevUser.firstName !== nextUser.firstName ||
       prevUser.surname !== nextUser.surname ||
       (prevUser.dateOfBirth !== nextUser.dateOfBirth &&
         helpers.calculateAge(prevUser.dateOfBirth) !== helpers.calculateAge(nextUser.dateOfBirth))
