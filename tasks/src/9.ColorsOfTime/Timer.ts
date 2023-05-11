@@ -1,10 +1,10 @@
-export default class Timer {
-  constructor() {
-    this.tickInterval = null;
-    this.handlers = [];
-  }
+type Handler = (time: Date) => void;
 
-  addUpdated(handler) {
+export default class Timer {
+  tickInterval: number | null = null;
+  handlers: Handler[] = [];
+
+  addUpdated(handler: Handler) {
     this.handlers.push(handler);
     if (!this.tickInterval) {
       this.tickInterval = window.setInterval(() => {
@@ -16,7 +16,7 @@ export default class Timer {
     }
   }
 
-  removeUpdated(handler) {
+  removeUpdated(handler: Handler) {
     this.handlers = this.handlers.filter(h => h !== handler);
     if (this.handlers.length === 0 && this.tickInterval) {
       clearInterval(this.tickInterval);

@@ -1,11 +1,11 @@
-export function toUtc(date) {
+export function toUtc(date: Date | null) {
   if (!date) {
     return date;
   }
   return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 }
 
-export function toTimezone(date, offset) {
+export function toTimezone(date: Date | null, offset: number) {
   if (!date) {
     return date;
   }

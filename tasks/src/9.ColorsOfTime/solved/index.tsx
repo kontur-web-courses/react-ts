@@ -1,20 +1,31 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import '../styles.css';
 import * as helpers from '../helpers';
 import * as themes from '../themes';
 import TimeDisplay from '../TimeDisplay';
 import Timer from '../Timer';
+import Button from '../Button';
+import { Theme } from '../themes';
 
-const CurrentTimeContext = React.createContext();
+const CurrentTimeContext = React.createContext<Date | null>(null);
 const ThemeContext = themes.Context;
-const ChangeThemeContext = React.createContext();
+
+type ChangeThemeType = 'prev' | 'next';
+type ChangeThemeHandler = (changeThemeType: ChangeThemeType) => void;
+
+const ChangeThemeContext = React.createContext<ChangeThemeHandler>(() => {});
 
 const ThemedButton = themes.withTheme(Button);
 
-class ColorsOfTime extends React.Component {
-  constructor(props) {
+type ColorsOfTimeProps = { timer: Timer };
+type ColorsOfTimeState = {
+  currentTime: Date | null;
+  theme: Theme;
+};
+
+class ColorsOfTime extends React.Component<ColorsOfTimeProps, ColorsOfTimeState> {
+  constructor(props: ColorsOfTimeProps) {
     super(props);
     this.state = {
       currentTime: null,
@@ -48,11 +59,11 @@ class ColorsOfTime extends React.Component {
     );
   }
 
-  handleTimerUpdated = currentTime => {
+  handleTimerUpdated = (currentTime: Date | null) => {
     this.setState({ currentTime: currentTime });
   };
 
-  dispatchChangeTheme = type => {
+  dispatchChangeTheme = (type: ChangeThemeType) => {
     let newTheme = null;
     switch (type) {
       case 'prev':
@@ -65,10 +76,6 @@ class ColorsOfTime extends React.Component {
     this.setState({ theme: newTheme });
   };
 }
-
-ColorsOfTime.propTypes = {
-  timer: PropTypes.object
-};
 
 class Top extends React.PureComponent {
   render() {
@@ -84,8 +91,6 @@ class Top extends React.PureComponent {
   }
 }
 
-Top.propTypes = {};
-
 class Middle extends React.PureComponent {
   render() {
     return (
@@ -97,8 +102,6 @@ class Middle extends React.PureComponent {
     );
   }
 }
-
-Middle.propTypes = {};
 
 class Bottom extends React.PureComponent {
   render() {
@@ -115,9 +118,9 @@ class Bottom extends React.PureComponent {
   }
 }
 
-Bottom.propTypes = {};
+type CardProps = { title: string; color?: string; timezone?: number };
 
-class Card extends React.Component {
+class Card extends React.Component<CardProps> {
   render() {
     registerRenderForDebug('Card');
     const { title, timezone, color } = this.props;
@@ -136,13 +139,7 @@ class Card extends React.Component {
   }
 }
 
-Card.propTypes = {
-  title: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  timezone: PropTypes.number
-};
-
-function registerRenderForDebug(name) {
+function registerRenderForDebug(name: string) {
   console.log(`render ${name} at ${new Date().toLocaleTimeString()}`);
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import './styles.css';
 import * as helpers from './helpers';
 import * as themes from './themes';
 import Button from './Button';
 import TimeDisplay from './TimeDisplay';
 import Timer from './Timer';
+import { Theme } from './themes';
 
 /**
     Автор кода явно сделал много лишней работы,
@@ -50,8 +50,11 @@ import Timer from './Timer';
        Используй ее!
  */
 
-class ColorsOfTime extends React.Component {
-  constructor(props) {
+type ColorsOfTimeProps = { timer: Timer };
+type ColorsOfTimeState = { currentTime: Date | null; theme: Theme };
+
+class ColorsOfTime extends React.Component<ColorsOfTimeProps, ColorsOfTimeState> {
+  constructor(props: ColorsOfTimeProps) {
     super(props);
     this.state = {
       currentTime: null,
@@ -83,11 +86,11 @@ class ColorsOfTime extends React.Component {
     );
   }
 
-  handleTimerUpdated = currentTime => {
+  handleTimerUpdated = (currentTime: Date | null) => {
     this.setState({ currentTime: currentTime });
   };
 
-  dispatchChangeTheme = type => {
+  dispatchChangeTheme = (type: ChangeThemeType) => {
     let newTheme = null;
     switch (type) {
       case 'prev':
@@ -101,11 +104,11 @@ class ColorsOfTime extends React.Component {
   };
 }
 
-ColorsOfTime.propTypes = {
-  timer: PropTypes.object
-};
+type ChangeThemeType = 'next' | 'prev';
 
-class Top extends React.PureComponent {
+type TopProps = { theme: Theme; onPrevTheme: () => void; onNextTheme: () => void };
+
+class Top extends React.PureComponent<TopProps> {
   render() {
     registerRenderForDebug('Top');
     const { theme, onPrevTheme, onNextTheme } = this.props;
@@ -118,13 +121,12 @@ class Top extends React.PureComponent {
   }
 }
 
-Top.propTypes = {
-  theme: PropTypes.object.isRequired,
-  onPrevTheme: PropTypes.func,
-  onNextTheme: PropTypes.func
+type MiddleProps = {
+  currentTime: Date | null;
+  theme: Theme;
 };
 
-class Middle extends React.PureComponent {
+class Middle extends React.PureComponent<MiddleProps> {
   render() {
     const { currentTime, theme } = this.props;
     return (
@@ -136,12 +138,9 @@ class Middle extends React.PureComponent {
   }
 }
 
-Middle.propTypes = {
-  theme: PropTypes.object.isRequired,
-  currentTime: PropTypes.object
-};
+type BottomProps = { currentTime: Date | null };
 
-class Bottom extends React.PureComponent {
+class Bottom extends React.PureComponent<BottomProps> {
   render() {
     const { currentTime } = this.props;
     return (
@@ -154,11 +153,9 @@ class Bottom extends React.PureComponent {
   }
 }
 
-Bottom.propTypes = {
-  currentTime: PropTypes.object
-};
+type CardProps = { title: string; currentTime: Date | null; color?: string; timezone?: number };
 
-class Card extends React.PureComponent {
+class Card extends React.PureComponent<CardProps> {
   render() {
     registerRenderForDebug('Card');
     const { title, timezone, currentTime, color } = this.props;
@@ -173,14 +170,7 @@ class Card extends React.PureComponent {
   }
 }
 
-Card.propTypes = {
-  title: PropTypes.string.isRequired,
-  color: PropTypes.string,
-  timezone: PropTypes.number,
-  currentTime: PropTypes.object
-};
-
-function registerRenderForDebug(name) {
+function registerRenderForDebug(name: string) {
   console.log(`render ${name} at ${new Date().toLocaleTimeString()}`);
 }
 
