@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
 type Post = {
@@ -51,10 +51,11 @@ function renderAuthors(posts: Post[]) {
   return <div className="authors">{authors}</div>;
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     <div className="posts">{posts.map(post => renderPost(post))}</div>
     {renderAuthors(posts)}
-  </div>,
-  document.getElementById('app')
+  </div>
 );

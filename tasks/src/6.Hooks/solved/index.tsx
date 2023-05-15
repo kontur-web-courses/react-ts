@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 const App = () => {
@@ -48,4 +48,6 @@ const CounterBlock = () => {
   return <div className="block">{value}</div>;
 };
 
-ReactDom.render(<App />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<App />);

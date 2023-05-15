@@ -1,13 +1,14 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="root">
     <div className="form">
       <div style={{ marginBottom: '10px' }}>Нажми отправить</div>
       <input type="button" className="button" value="Отправить" onClick={() => alert('Отправлено')} />
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );

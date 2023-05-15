@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
 const RUBLES_IN_ONE_EURO = 70;
@@ -69,4 +69,6 @@ function extractNumberString(value: string): number {
   return Number(parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : str);
 }
 
-ReactDom.render(<MoneyConverter />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<MoneyConverter />);

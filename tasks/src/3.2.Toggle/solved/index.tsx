@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 import '../toggle.css';
 
@@ -42,9 +42,10 @@ class Toggle extends React.Component<ToggleProps, ToggleState> {
   };
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     <Toggle onChange={value => console.log(value)} /> Использовать умные компоненты
-  </div>,
-  document.getElementById('app')
+  </div>
 );

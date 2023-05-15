@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 import * as helpers from './helpers';
 import * as themes from './themes';
@@ -175,7 +175,10 @@ function registerRenderForDebug(name: string) {
 }
 
 const timer = new Timer();
-ReactDom.render(<ColorsOfTime timer={timer} />, document.getElementById('app'));
+
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<ColorsOfTime timer={timer} />);
 
 /**
     Подсказки:

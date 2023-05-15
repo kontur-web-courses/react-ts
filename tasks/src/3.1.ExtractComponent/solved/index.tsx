@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 type PostProps = {
@@ -21,13 +21,14 @@ function Post({ author = '<Неизвестный автор>', time, children }
   );
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     <div className="posts">
       <Post author="Милая девушка" time="3 часа назад">
         Можно использовать для выпекания чизкейков :)
       </Post>
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );

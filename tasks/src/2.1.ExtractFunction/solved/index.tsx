@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
 function renderLot() {
@@ -24,13 +24,14 @@ function renderPost(author: string, time: string, message: string) {
   );
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     {renderLot()}
     <div className="posts">
       {renderPost('Парень не промах', '2 часа назад', 'Попробую с удовольствием ;)')}
       {renderPost('Милая девушка', '3 часа назад', 'Можно использовать для выпекания чизкейков :)')}
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );

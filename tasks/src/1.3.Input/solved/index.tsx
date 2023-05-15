@@ -1,10 +1,12 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
 let userName = 'По умолчанию';
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="root">
     <div className="form">
       <div style={{ paddingRight: '10px', display: 'inline-block' }}>
@@ -20,6 +22,5 @@ ReactDom.render(
         onBlur={() => alert(`userName: ${userName}`)}
       />
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );

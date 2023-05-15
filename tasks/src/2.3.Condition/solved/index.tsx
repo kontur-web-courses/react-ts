@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
 function renderPosts(posts: string[]) {
@@ -28,10 +28,11 @@ function renderTags(tags: string[]) {
   return <div className="lotTags">{content}</div>;
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     {renderLot('', '', [])}
     {renderPosts([])}
-  </div>,
-  document.getElementById('app')
+  </div>
 );

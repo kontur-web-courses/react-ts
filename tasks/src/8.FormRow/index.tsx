@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 import Input, { InputProps } from './Input';
 import Toggle from './Toggle';
@@ -137,7 +137,9 @@ class ToggleFormRow extends React.Component<FormRowProps> {
   }
 }
 
-ReactDom.render(<Form />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Form />);
 
 /**
     Подсказки к 4:

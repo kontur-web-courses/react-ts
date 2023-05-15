@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import ReactDom from 'react-dom';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 /**
@@ -34,7 +34,9 @@ function renderPost(post: Post) {
   );
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     <div className="posts">
       {renderPost({
@@ -43,8 +45,7 @@ ReactDom.render(
         message: 'Можно использовать для выпекания чизкейков :)'
       })}
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );
 
 /**

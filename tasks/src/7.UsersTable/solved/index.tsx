@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../styles.css';
 import EditUserForm from '../EditUserForm';
 import * as helpers from '../helpers';
@@ -169,4 +169,6 @@ interface UserTableRowProps {
   onEditUser: (user: User) => void;
 }
 
-ReactDom.render(<Users />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Users />);

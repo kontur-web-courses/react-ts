@@ -1,8 +1,12 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
+
 import '../styles.css';
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+
+root.render(
   <form className="form">
     <h1>Добавление отзыва</h1>
     <div>
@@ -41,6 +45,5 @@ ReactDom.render(
         <input type="button" className="button" defaultValue="Отправить" />
       </div>
     </div>
-  </form>,
-  document.getElementById('app')
+  </form>
 );
