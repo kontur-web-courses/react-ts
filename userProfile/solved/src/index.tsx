@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Form from './Form';
 import './style.css';
 
@@ -37,4 +37,6 @@ import './style.css';
  *  дублирования.
  */
 
-ReactDom.render(<Form />, document.getElementById('react'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Form />);

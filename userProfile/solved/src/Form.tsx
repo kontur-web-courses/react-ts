@@ -50,6 +50,7 @@ export default class Form extends React.Component<{}, FormState> {
                             placeholder="Введите имя пользователя"
                             value={name}
                             onValueChange={this.onChange('name')}
+                            width={250}
                         />
                     </label>
                     <label>
@@ -58,6 +59,7 @@ export default class Form extends React.Component<{}, FormState> {
                             placeholder="Введите фамилию пользователя"
                             value={surname}
                             onValueChange={this.onChange('surname')}
+                            width={250}
                         />
                     </label>
                     <label>
@@ -83,10 +85,13 @@ export default class Form extends React.Component<{}, FormState> {
         return (
             <Modal onClose={this.closeModal}>
                 <Modal.Header>Пользователь сохранен</Modal.Header>
-                <Modal.Body>
-                    <p>Измененные данные:</p>
-                    {isNothingChanged ? 'ничего' : this.renderChanges()}
-                </Modal.Body>
+                {isNothingChanged ? null : (
+                    <Modal.Body>
+                        <p>Измененные данные:</p>
+                        {this.renderChanges()}
+                    </Modal.Body>
+                )}
+
                 <Modal.Footer>
                     <Button onClick={this.closeModal}>Закрыть</Button>
                 </Modal.Footer>
