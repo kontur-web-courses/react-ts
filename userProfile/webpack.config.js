@@ -40,6 +40,7 @@ module.exports = {
         }
     },
     devServer: {
+        port: 8081,
         static: { directory: path.resolve(__dirname) },
         devMiddleware: {
             writeToDisk: true

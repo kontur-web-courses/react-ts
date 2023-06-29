@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode development && exit 0",
-    "start": "webpack serve --mode development --port=8081"
+    "start": "webpack serve --mode development"
   },
   "author": "",
   "license": "ISC",

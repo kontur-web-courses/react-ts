@@ -20,7 +20,6 @@ function createFormRow<T extends {}>(WrappedComponent: React.ComponentType<T>) {
   const wrappedName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
   FormRow.displayName = `FormRow(${wrappedName})`;
 
-  // forward.displayName = FormRow.displayName;
   return React.forwardRef((props: React.ComponentProps<typeof FormRow>, ref) => (
     <FormRow {...props} forwardedRef={ref} />
   ));
@@ -29,83 +28,61 @@ function createFormRow<T extends {}>(WrappedComponent: React.ComponentType<T>) {
 const InputFormRow = createFormRow(Input);
 const ToggleFormRow = createFormRow(Toggle);
 
-type FormState = {
-  opened: boolean;
-};
+const Form = () => {
+  const [opened, changeOpened] = React.useState(false);
+  const firstRowRef = React.useRef<Input>();
 
-class Form extends React.Component<{}, FormState> {
-  private firstRowRef = React.createRef<Input>();
+  React.useEffect(() => {
+    setFocusOnOpen();
+  });
 
-  constructor(props: {}) {
-    super(props);
-
-    this.state = {
-      opened: false
-    };
-  }
-
-  render() {
-    const { opened } = this.state;
-    return (
-      <div>
-        {!opened && this.renderOpenButton()}
-        {opened && this.renderForm()}
-      </div>
-    );
-  }
-
-  renderOpenButton() {
+  const renderOpenButton = () => {
     return (
       <div className="openContainer">
-        <input type="button" className="actionButton" value="Открыть" onClick={this.handleOpen} />
+        <input type="button" className="actionButton" value="Открыть" onClick={handleOpen} />
       </div>
     );
-  }
+  };
 
-  componentDidMount() {
-    this.setFocusOnOpen();
-  }
-
-  componentDidUpdate() {
-    this.setFocusOnOpen();
-  }
-
-  renderForm() {
+  const renderForm = () => {
     return (
       <div className="form">
         <form>
-          <InputFormRow ref={this.firstRowRef} label="Фамилия" type="text" />
+          <InputFormRow ref={firstRowRef} label="Фамилия" type="text" />
           <InputFormRow label="Имя" type="text" />
           <InputFormRow label="Отчество" type="text" />
           <ToggleFormRow label="Вегетарианец" />
         </form>
         <div className="saveContainer">
-          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
+          <input type="submit" className="actionButton" value="Сохранить" onClick={handleSave} />
         </div>
       </div>
     );
-  }
-
-  handleOpen = () => {
-    this.setState({
-      opened: true
-    });
   };
 
-  handleSave = () => {
-    this.setState({
-      opened: false
-    });
+  const handleOpen = () => {
+    changeOpened(true);
   };
 
-  setFocusOnOpen = () => {
-    if (this.state.opened) {
+  const handleSave = () => {
+    changeOpened(false);
+  };
+
+  const setFocusOnOpen = () => {
+    if (opened) {
       // Проверка перед вызовом нужна,
       // пока this.firstRowRef не устанавливается корректно.
-      this.firstRowRef?.current?.focus?.();
+      firstRowRef?.current?.focus?.();
     }
   };
-}
+
+  return (
+    <div>
+      {!opened && renderOpenButton()}
+      {opened && renderForm()}
+    </div>
+  );
+};
 
 const domNode = document.getElementById('app') as HTMLElement;
 const root = createRoot(domNode);

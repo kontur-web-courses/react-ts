@@ -1298,8 +1298,8 @@ function MyFunctionalComponent() {
 
 1. Перейди в директорию задачи: в корне проекта директория userProfile
 2. Установи в ней зависимости `npm i`
-3. Останови прошлый webpack-сервер, если он все еще запущен.
-4. Запусти новый сервер командой `npm start`
+3. Запусти новый сервер командой `npm start`
+4. В браузере открой <a href="http://localhost:8081">http://localhost:8081</a>
 5. В файле `src/index.tsx` описание задания
 
 
@@ -1646,18 +1646,17 @@ const EnhancedComponent = enhance(JustComponent); // enhance — это HOC
 ### Что происходит в enhance
 
 ```js
-function enhance(WrappedComponent) { // Функция принимает компонент...
-    class Enhanced extends React.Component { // ...создает новый компонент...
-      render() {
-        // Свойства разделяются на две части
-        const { value1, value2, ...rest } = this.props;
+// Функция принимает компонент...
+function enhance<T extends {}>(WrappedComponent: React.ComponentType<T>) {
+      // ...создает новый компонент...
+      const Enhanced: React.FC<EnhanceHOCProps & T> = props => {
+
         return ( // Рендерим новый компонент
-            <span className={value2}>
-                { value1 }
-                <WrappedComponent {...rest} isSelected={true} />
+            <span className={props.value2}>
+                { props.value1 }
+                <WrappedComponent {...props} isSelected={true} />
             </span>
         )}
-    };
 
     return Enhanced; // ...и возвращает созданный компонент.
 }
@@ -1690,12 +1689,14 @@ const someRef = React.createRef();
 <EnhancedButton label="Click Me" ref={someRef} />;
 ```
 ```js
-function enhance(WrappedComponent) {
-  class Enhanced extends React.Component {
-      render() {
-        const {forwardedRef, ...rest} = this.props;
-        return <WrappedComponent ref={forwardedRef} {...rest} />
-      }
+type EnhanceHOCProps = {
+    forwardedRef?: React.ForwardedRef<unknown>
+    }
+```
+```js
+function enhance<T extends {}>(WrappedComponent: React.ComponentType<T>)  {
+  const Enhanced: React.FC<EnhanceHOCProps & T> = props => {
+    return <WrappedComponent ref={forwardedRef} {...rest} />
   }
   // React не передает значение атрибута "ref" в props обычных компонентов.
   // Но компонент React.forwardRef дает нам доступ к значению атрибута "ref"
@@ -1835,30 +1836,31 @@ const CakeContext = React.createContext();
 
 ***
 
-### Задача 9. ColorsOfTime
-
-***
-
 ### Потребление значения в функциональных компонентах
 
 Без хуков:
 ```js
 function Glutton() {
-  return (
-    <CakeContext.Consumer>
-      {cake => <Hungry food={cake} />}
-    </CakeContext.Consumer>
-  );
+return (
+<CakeContext.Consumer>
+  {cake => <Hungry food={cake} />}
+</CakeContext.Consumer>
+);
 }
 ```
 
 С хуками:
 ```js
 function Glutton() {
-  const cake = useContext(CakeContext);
-  return <Hungry food={cake} />;
+const cake = useContext(CakeContext);
+return <Hungry food={cake} />;
 }
 ```
+
+***
+
+### Задача 9. ColorsOfTime
+
 
 </script></section>
 

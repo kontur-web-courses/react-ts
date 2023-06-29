@@ -26,13 +26,13 @@ import { Theme } from './themes';
     3. Используй CurrentTimeContext.Consumer, чтобы не прокидывать currentTime через свойства.
        Тут стратегия минимизации: надо оборачивать в Consumer только те компоненты, которым ресурс требуется.
        Потому что при обновлении значения контекста будет перерисовываться все, что внутри Consumer'ов.
-    4. Не забудь убрать ненужное теперь простаскивание currentTime через параметры!
+    4. Не забудь убрать ненужное теперь протаскивание currentTime через параметры!
     5. Открой Developer Tools и посмотри, как часто вызывается render в Card с течением времени.
        Попробуй объяснить, почему использование context привело к такому эффекту.
     6. Проделай то же самое для ThemeContext:
        - Создай ThemeContext
        - Оберни CurrentTimeContext.Provider в ThemeContext.Provider
-       - Используй ThemeContext.Consumer для передачи темы в кнопки и в Card с цветным локальным временем
+       - Используй ThemeContext.Consumer или React.useContext для передачи темы в кнопки и в Card с цветным локальным временем
        - Снова приберись в коде!
     7. Добавь ChangeThemeContext. Пусть он хранит ссылку на функцию dispatchChangeTheme.
        Пусть кнопки смены цвета теперь создают обработчики на основе ChangeThemeContext,
@@ -43,7 +43,7 @@ import { Theme } from './themes';
        А кнопки смены цвета перенеси в блок Bottom.
        Удобно ли было переносить эти компоненты сейчас?
    10. Если контекст используется часто, можно создать специальный HOC компонент, чтобы оборачивать компоненты в Consumer.
-       Найди в themes.js Context и используй в качесте ThemeContext:
+       Найди в themes.js Context и используй в качестве ThemeContext:
           const ThemeContext = themes.Context;
        Теперь ты можешь определить кнопку так:
           const ThemedButton = themes.withTheme(Button);
@@ -51,124 +51,101 @@ import { Theme } from './themes';
  */
 
 type ColorsOfTimeProps = { timer: Timer };
-type ColorsOfTimeState = { currentTime: Date | null; theme: Theme };
 
-class ColorsOfTime extends React.Component<ColorsOfTimeProps, ColorsOfTimeState> {
-  constructor(props: ColorsOfTimeProps) {
-    super(props);
-    this.state = {
-      currentTime: null,
-      theme: themes.red
+const ColorsOfTime = ({ timer }: ColorsOfTimeProps) => {
+  const [currentTime, changeCurrentTime] = React.useState<Date | null>(null);
+  const [theme, changeTheme] = React.useState<Theme>(themes.red);
+
+  React.useEffect(() => {
+    const handleTimerUpdated = (currentTime: Date | null) => {
+      changeCurrentTime(currentTime);
     };
-  }
+    timer.addUpdated(handleTimerUpdated);
+    return () => {
+      timer.removeUpdated(handleTimerUpdated);
+    };
+  }, []);
 
-  componentDidMount() {
-    this.props.timer.addUpdated(this.handleTimerUpdated);
-  }
-
-  componentWillUnmount() {
-    this.props.timer.removeUpdated(this.handleTimerUpdated);
-  }
-
-  render() {
-    const { currentTime, theme } = this.state;
-    return (
-      <div className="page">
-        <h1>Цвета времени</h1>
-        <Top
-          theme={theme}
-          onPrevTheme={() => this.dispatchChangeTheme('prev')}
-          onNextTheme={() => this.dispatchChangeTheme('next')}
-        />
-        <Middle currentTime={currentTime} theme={theme} />
-        <Bottom currentTime={currentTime} />
-      </div>
-    );
-  }
-
-  handleTimerUpdated = (currentTime: Date | null) => {
-    this.setState({ currentTime: currentTime });
-  };
-
-  dispatchChangeTheme = (type: ChangeThemeType) => {
+  const dispatchChangeTheme = (type: ChangeThemeType) => {
     let newTheme = null;
     switch (type) {
       case 'prev':
-        newTheme = themes.getPrevTheme(this.state.theme);
+        newTheme = themes.getPrevTheme(theme);
         break;
       case 'next':
-        newTheme = themes.getNextTheme(this.state.theme);
+        newTheme = themes.getNextTheme(theme);
         break;
     }
-    this.setState({ theme: newTheme });
+    changeTheme(newTheme);
   };
-}
+
+  return (
+    <div className="page">
+      <h1>Цвета времени</h1>
+      <Top
+        theme={theme}
+        onPrevTheme={() => dispatchChangeTheme('prev')}
+        onNextTheme={() => dispatchChangeTheme('next')}
+      />
+      <Middle currentTime={currentTime} theme={theme} />
+      <Bottom currentTime={currentTime} />
+    </div>
+  );
+};
 
 type ChangeThemeType = 'next' | 'prev';
 
 type TopProps = { theme: Theme; onPrevTheme: () => void; onNextTheme: () => void };
 
-class Top extends React.PureComponent<TopProps> {
-  render() {
-    registerRenderForDebug('Top');
-    const { theme, onPrevTheme, onNextTheme } = this.props;
-    return (
-      <div className="block">
-        <Button value="← цвет" theme={theme} onClick={onPrevTheme} />
-        <Button value="цвет →" theme={theme} onClick={onNextTheme} />
-      </div>
-    );
-  }
-}
+const Top = React.memo(({ theme, onPrevTheme, onNextTheme }: TopProps) => {
+  registerRenderForDebug('Top');
+  return (
+    <div className="block">
+      <Button value="← цвет" theme={theme} onClick={onPrevTheme} />
+      <Button value="цвет →" theme={theme} onClick={onNextTheme} />
+    </div>
+  );
+});
 
 type MiddleProps = {
   currentTime: Date | null;
   theme: Theme;
 };
 
-class Middle extends React.PureComponent<MiddleProps> {
-  render() {
-    const { currentTime, theme } = this.props;
-    return (
-      <div className="block">
-        <Card title="Цветное локальное" currentTime={currentTime} color={theme.foregroundColor} />
-        <Card title="Серый Лондон" timezone={+0} currentTime={currentTime} />
-      </div>
-    );
-  }
-}
+const Middle = React.memo(({ theme, currentTime }: MiddleProps) => {
+  return (
+    <div className="block">
+      <Card title="Цветное локальное" currentTime={currentTime} color={theme.foregroundColor} />
+      <Card title="Серый Лондон" timezone={+0} currentTime={currentTime} />
+    </div>
+  );
+});
 
 type BottomProps = { currentTime: Date | null };
 
-class Bottom extends React.PureComponent<BottomProps> {
-  render() {
-    const { currentTime } = this.props;
-    return (
-      <div className="block">
-        <Card title="Синий Нью-Йорк" timezone={-4} currentTime={currentTime} color="blue" />
-        <Card title="Зеленый Париж" timezone={+2} currentTime={currentTime} color="green" />
-        <Card title="Красный Пекин" timezone={+8} currentTime={currentTime} color="red" />
-      </div>
-    );
-  }
-}
+const Bottom = React.memo(({ currentTime }: BottomProps) => {
+  return (
+    <div className="block">
+      <Card title="Синий Нью-Йорк" timezone={-4} currentTime={currentTime} color="blue" />
+      <Card title="Зеленый Париж" timezone={+2} currentTime={currentTime} color="green" />
+      <Card title="Красный Пекин" timezone={+8} currentTime={currentTime} color="red" />
+    </div>
+  );
+});
 
 type CardProps = { title: string; currentTime: Date | null; color?: string; timezone?: number };
 
-class Card extends React.PureComponent<CardProps> {
-  render() {
-    registerRenderForDebug('Card');
-    const { title, timezone, currentTime, color } = this.props;
-    return (
-      <div className="card">
-        <h3>{title}</h3>
-        <div>
-          <TimeDisplay time={timezone ? helpers.toTimezone(currentTime, timezone) : currentTime} color={color} />
-        </div>
+const Card = React.memo(({ currentTime, timezone, color, title }: CardProps) => {
+  registerRenderForDebug('Card');
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      <div>
+        <TimeDisplay time={timezone ? helpers.toTimezone(currentTime, timezone) : currentTime} color={color} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+});
 
 function registerRenderForDebug(name: string) {
   console.log(`render ${name} at ${new Date().toLocaleTimeString()}`);
@@ -192,4 +169,5 @@ root.render(<ColorsOfTime timer={timer} />);
       <CakeContext.Consumer>
         {cake => <Hungry food={cake} />}
       </CakeContext.Consumer>
+    - const cake = React.useContext(CakeContext);
  */

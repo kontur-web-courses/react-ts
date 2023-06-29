@@ -2,11 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '../styles.css';
 
-function renderLot() {
+function renderLot(name: string, description: string) {
   return (
     <div className="lot">
-      <div className="lotName">Форма для выпекания</div>
-      <div className="lotDescription">Идеальна для приготовления десертов!</div>
+      <div className="lotName">{name}</div>
+      <div className="lotDescription">{description}</div>
     </div>
   );
 }
@@ -28,7 +28,7 @@ const domNode = document.getElementById('app') as HTMLElement;
 const root = createRoot(domNode);
 root.render(
   <div className="page">
-    {renderLot()}
+    {renderLot('Форма для выпекания', 'Идеальна для приготовления десертов!')}
     <div className="posts">
       {renderPost('Парень не промах', '2 часа назад', 'Попробую с удовольствием ;)')}
       {renderPost('Милая девушка', '3 часа назад', 'Можно использовать для выпекания чизкейков :)')}

@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import Input, { InputProps } from './Input';
-import Toggle from './Toggle';
+import Toggle, { ToggleProps } from './Toggle';
 
 /**
     InputFormRow — штука классная, но поддерживает только обычные input.
@@ -30,7 +30,7 @@ import Toggle from './Toggle';
     4. Сделай так, чтобы при открытии формы фокус устанавливался в первом поле формы.
        Весь необходимый код в Form уже написан:
        - firstRowRef установлен на первый ряд формы;
-       - при открытии формы вызывается this.firstRowRef.current.focus();
+       - при открытии формы вызывается firstRowRef.current.focus();
        Но this.firstRowRef.current не указывает на input или Toggle, у которых определен метод focus.
        HOC должен пересылать ref на WrappedComponent.
 
@@ -39,42 +39,23 @@ import Toggle from './Toggle';
        для всех возможных WrappedComponent, с которыми будет использоваться HOC.
  */
 
-type FormState = { opened: boolean };
+const Form = () => {
+  const [opened, changeOpened] = React.useState(false);
+  const firstRowRef = React.useRef<Input>();
 
-class Form extends React.Component<{}, FormState> {
-  private firstRowRef = React.createRef<Input>();
+  React.useEffect(() => {
+    setFocusOnOpen();
+  });
 
-  state = {
-    opened: false
-  };
-
-  render() {
-    const { opened } = this.state;
-    return (
-      <div>
-        {!opened && this.renderOpenButton()}
-        {opened && this.renderForm()}
-      </div>
-    );
-  }
-
-  renderOpenButton() {
+  const renderOpenButton = () => {
     return (
       <div className="openContainer">
-        <input type="button" className="actionButton" value="Показать форму" onClick={this.handleOpen} />
+        <input type="button" className="actionButton" value="Показать форму" onClick={handleOpen} />
       </div>
     );
-  }
+  };
 
-  componentDidMount() {
-    this.setFocusOnOpen();
-  }
-
-  componentDidUpdate() {
-    this.setFocusOnOpen();
-  }
-
-  renderForm() {
+  const renderForm = () => {
     return (
       <div className="form">
         <form>
@@ -84,58 +65,55 @@ class Form extends React.Component<{}, FormState> {
           <ToggleFormRow label="Вегетарианец" />
         </form>
         <div className="saveContainer">
-          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
+          <input type="submit" className="actionButton" value="Сохранить" onClick={handleSave} />
         </div>
       </div>
     );
-  }
-
-  handleOpen = () => {
-    this.setState({
-      opened: true
-    });
   };
 
-  handleSave = () => {
-    this.setState({
-      opened: false
-    });
+  const handleOpen = () => {
+    changeOpened(true);
   };
 
-  setFocusOnOpen = () => {
-    if (this.state.opened) {
+  const handleSave = () => {
+    changeOpened(false);
+  };
+
+  const setFocusOnOpen = () => {
+    if (opened) {
       // Проверка перед вызовом нужна,
-      // пока this.firstRowRef не устанавливается корректно.
-      this.firstRowRef.current?.focus && this.firstRowRef.current.focus();
+      // пока firstRowRef не устанавливается корректно.
+      firstRowRef?.current?.focus?.();
     }
   };
-}
+
+  return (
+    <div>
+      {!opened && renderOpenButton()}
+      {opened && renderForm()}
+    </div>
+  );
+};
 
 type FormRowProps = { label: string };
 
-class InputFormRow extends React.Component<FormRowProps & InputProps> {
-  render() {
-    const { label, ...rest } = this.props;
-    return (
-      <div className="row">
-        <div className="label">{label}</div>
-        <Input {...rest} />
-      </div>
-    );
-  }
-}
+const InputFormRow = ({ label, ...rest }: FormRowProps & InputProps) => {
+  return (
+    <div className="row">
+      <div className="label">{label}</div>
+      <Input {...rest} />
+    </div>
+  );
+};
 
-class ToggleFormRow extends React.Component<FormRowProps> {
-  render() {
-    const { label, ...rest } = this.props;
-    return (
-      <div className="row">
-        <div className="label">{label}</div>
-        <Toggle {...rest} />
-      </div>
-    );
-  }
-}
+const ToggleFormRow = ({ label, ...rest }: FormRowProps & ToggleProps) => {
+  return (
+    <div className="row">
+      <div className="label">{label}</div>
+      <Toggle {...rest} />
+    </div>
+  );
+};
 
 const domNode = document.getElementById('app') as HTMLElement;
 const root = createRoot(domNode);
@@ -148,15 +126,13 @@ root.render(<Form />);
 
     - Чтобы React пробрасывал ref, в конец HOC придется добавить такой код:
 
-        const forward = (props, ref) => <FormRow {...props} forwardedRef={ref}/>;
-        forward.displayName = FormRow.displayName;
-        return React.forwardRef(forward);
+      React.forwardRef((props: React.ComponentProps<typeof FormRow>, ref) => (
+      <FormRow {...props} forwardedRef={ref} />
+      ))
 
       Предполагается, что компонент-обертка называется FormRow.
       Заметь, что React.forwardRef — это почти HOC, а forward — это почти функция-компонент.
       Подробнее про ForwardedRef написано в документации https://reactjs.org/docs/forwarding-refs.html
-
-    - forwardedRef — это PropTypes.object
 
     - Когда ref уже лежит в отдельном атрибуте, его несложно использовать:
         <WrappedComponent ref={forwardedRef} {...rest} />

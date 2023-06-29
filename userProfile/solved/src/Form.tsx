@@ -7,12 +7,6 @@ type FormData = {
     city: string;
 };
 
-type FormState = {
-    modalOpened: boolean;
-    saved: FormData;
-    current: FormData;
-};
-
 const defaultData = {
     name: '',
     surname: '',
@@ -21,26 +15,13 @@ const defaultData = {
 
 const cities = ['Москва', 'Урюпинск', 'Новосибирск', 'Екатеринбург', 'Тагиииил'];
 
-export default class Form extends React.Component<{}, FormState> {
-    public state: FormState = {
-        modalOpened: false,
-        saved: { ...defaultData },
-        current: { ...defaultData }
-    };
+export default function Form() {
+    const [modalOpened, setModalOpened] = React.useState(false);
+    const [saved, changeSaved] = React.useState(defaultData);
+    const [current, changeCurrent] = React.useState(defaultData);
 
-    public render() {
-        const { modalOpened } = this.state;
-        return (
-            <div>
-                <h2>Информация о пользователе</h2>
-                {this.renderForm()}
-                {modalOpened && this.renderModal()}
-            </div>
-        );
-    }
-
-    private renderForm() {
-        const { name, surname, city } = this.state.current;
+    const renderForm = () => {
+        const { name, surname, city } = current;
         return (
             <form>
                 <Gapped gap={15} vertical>
@@ -49,7 +30,7 @@ export default class Form extends React.Component<{}, FormState> {
                         <Input
                             placeholder="Введите имя пользователя"
                             value={name}
-                            onValueChange={this.onChange('name')}
+                            onValueChange={onChange('name')}
                             width={250}
                         />
                     </label>
@@ -58,7 +39,7 @@ export default class Form extends React.Component<{}, FormState> {
                         <Input
                             placeholder="Введите фамилию пользователя"
                             value={surname}
-                            onValueChange={this.onChange('surname')}
+                            onValueChange={onChange('surname')}
                             width={250}
                         />
                     </label>
@@ -68,50 +49,47 @@ export default class Form extends React.Component<{}, FormState> {
                             placeholder="Выберите город"
                             items={cities}
                             value={city}
-                            onValueChange={this.onChange('city')}
+                            onValueChange={onChange('city')}
                         />
                     </label>
-                    <Button use="primary" size="large" onClick={this.openModal}>
+                    <Button use="primary" size="large" onClick={openModal}>
                         Сохранить
                     </Button>
                 </Gapped>
             </form>
         );
-    }
+    };
 
-    private renderModal() {
-        const { saved, current } = this.state;
+    const renderModal = () => {
         const isNothingChanged = (Object.keys(current) as (keyof FormData)[]).every(key => saved[key] === current[key]);
         return (
-            <Modal onClose={this.closeModal}>
+            <Modal onClose={closeModal}>
                 <Modal.Header>Пользователь сохранен</Modal.Header>
                 {isNothingChanged ? null : (
                     <Modal.Body>
                         <p>Измененные данные:</p>
-                        {this.renderChanges()}
+                        {renderChanges()}
                     </Modal.Body>
                 )}
 
                 <Modal.Footer>
-                    <Button onClick={this.closeModal}>Закрыть</Button>
+                    <Button onClick={closeModal}>Закрыть</Button>
                 </Modal.Footer>
             </Modal>
         );
-    }
+    };
 
-    private renderChanges() {
+    const renderChanges = () => {
         return (
             <p>
-                {this.renderDiff('name', 'Имя')}
-                {this.renderDiff('surname', 'Фамилия')}
-                {this.renderDiff('city', 'Город')}
+                {renderDiff('name', 'Имя')}
+                {renderDiff('surname', 'Фамилия')}
+                {renderDiff('city', 'Город')}
             </p>
         );
-    }
+    };
 
-    private renderDiff(field: keyof FormData, fieldName: string) {
-        const { current, saved } = this.state;
-
+    const renderDiff = (field: keyof FormData, fieldName: string) => {
         if (current[field] === saved[field]) {
             return null;
         }
@@ -121,29 +99,28 @@ export default class Form extends React.Component<{}, FormState> {
                 {fieldName}: было {saved[field] || '*ничего*'}, стало {current[field] || '*ничего*'} <br />
             </React.Fragment>
         );
-    }
-
-    private openModal = () => {
-        this.setState({
-            modalOpened: true
-        });
     };
 
-    private closeModal = () => {
-        this.setState({
-            modalOpened: false,
-            saved: { ...this.state.current }
-        });
+    const openModal = () => {
+        setModalOpened(true);
     };
 
-    private onChange = (field: keyof FormData) => {
+    const closeModal = () => {
+        setModalOpened(false);
+        changeSaved({ ...current });
+    };
+
+    const onChange = (field: keyof FormData) => {
         return (value: string) => {
-            this.setState({
-                current: {
-                    ...this.state.current,
-                    [field]: value
-                }
-            });
+            changeCurrent(current => ({ ...current, [field]: value }));
         };
     };
+
+    return (
+        <div>
+            <h2>Информация о пользователе</h2>
+            {renderForm()}
+            {modalOpened && renderModal()}
+        </div>
+    );
 }
