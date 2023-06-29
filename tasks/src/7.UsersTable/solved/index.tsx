@@ -14,9 +14,8 @@ import defaultUsers, { User } from '../defaultUsers';
                 Чтобы помогло надо сначала UserTableRow сделать PureComponent,
                 либо написать в нем собственный shouldComponentUpdate
                 После этого добавление станет работать эффективнее.
-    Проблема 4. Написать свой shouldComponentUpdate в UserTableRow все же придется,
+    Проблема 4. Написать свой propsAreEqual в UserTableRow все же придется,
                 потому что редактирование невидимых полей не должно приводить к рендерингу.
-                Заметь, что shouldComponentUpdate нельзя опредилить у PureComponent.
  */
 
 let generation = 1;
@@ -31,138 +30,114 @@ function logEvent(msg: string) {
   console.log(` ${generation}.${generationEvents++}\t${msg}`);
 }
 
-class Users extends React.Component<{}, UserTableState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      users: defaultUsers,
-      editingUser: null
-    };
-  }
+const Users = () => {
+  const [users, changeUsers] = React.useState<User[]>(defaultUsers);
+  const [editingUser, changeEditingUser] = React.useState<User | null>(null);
 
-  render() {
-    const { users, editingUser } = this.state;
-    return (
-      <div className="root">
-        {editingUser && <EditUserForm user={editingUser} onSave={this.handleSaveUser} />}
-        <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
-      </div>
-    );
-  }
-
-  handleAddUser = () => {
-    const newId = helpers.getNewId(this.state.users);
+  const handleAddUser = React.useCallback(() => {
+    const newId = helpers.getNewId(users);
     updateGeneration();
-    this.setState({
-      users: [{ id: newId }, ...this.state.users]
-    });
-  };
+    changeUsers([{ id: newId }, ...users]);
+  }, [users]);
 
-  handleEditUser = (user: User) => {
+  const handleEditUser = React.useCallback((user: User) => {
     updateGeneration();
-    this.setState({
-      editingUser: user
-    });
-  };
+    changeEditingUser(user);
+  }, []);
 
-  handleSaveUser = (user: User) => {
-    updateGeneration();
-    this.setState({
-      editingUser: null,
-      users: this.state.users.map(u => (u.id === user.id ? user : u))
-    });
-  };
-}
+  const handleSaveUser = React.useCallback(
+    (user: User) => {
+      updateGeneration();
+      changeEditingUser(null);
+      changeUsers(users.map(u => (u.id === user.id ? user : u)));
+    },
+    [users]
+  );
 
-class UserTable extends React.PureComponent<UserTableProps> {
-  componentDidMount() {
+  return (
+    <div className="root">
+      {editingUser && <EditUserForm user={editingUser} onSave={handleSaveUser} />}
+      <UserTable users={users} onEditUser={handleEditUser} onAddUser={handleAddUser} />
+    </div>
+  );
+};
+
+const UserTable = React.memo(({ users, onEditUser, onAddUser }: UserTableProps) => {
+  React.useEffect(() => {
     logEvent('UserTable\t\t did mount');
-  }
+    return () => logEvent('UserTable\t\t will unmount');
+  }, []);
 
-  componentWillUnmount() {
-    logEvent('UserTable\t\t will unmount');
-  }
+  logEvent('UserTable\t\t render');
 
-  render() {
-    logEvent('UserTable\t\t render');
-    const { users, onEditUser, onAddUser } = this.props;
-    return (
-      <div className="table">
-        <table>
-          <thead>
-            <tr>
-              <th>Фамилия</th>
-              <th>Имя</th>
-              <th>Возраст</th>
-              <th>
-                <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users?.map(user => (
-              <UserTableRow user={user} key={user.id} onEditUser={onEditUser} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="table">
+      <table>
+        <thead>
+          <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Возраст</th>
+            <th>
+              <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <UserTableRow user={user} key={user.id} onEditUser={onEditUser} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+});
 
 interface UserTableProps {
-  users?: User[];
-  onEditUser: (user: User) => void;
-  onAddUser?: () => void;
-}
-
-interface UserTableState {
   users: User[];
-  editingUser: User | null;
+  onEditUser: (user: User) => void;
+  onAddUser: () => void;
 }
 
-class UserTableRow extends React.Component<UserTableRowProps> {
-  componentDidMount() {
-    logEvent('UserTableRow\t did mount with id=' + this.props.user.id);
-  }
-
-  componentWillUnmount() {
-    logEvent('UserTableRow\t will unmount with id=' + this.props.user.id);
-  }
-
-  shouldComponentUpdate(nextProps: UserTableRowProps) {
-    if (!this.props) {
-      return true;
-    }
-    const prevUser = this.props.user;
-    const nextUser = nextProps.user;
-    return (
-      prevUser.firstName !== nextUser.firstName ||
-      prevUser.surname !== nextUser.surname ||
-      (prevUser.dateOfBirth !== nextUser.dateOfBirth &&
-        helpers.calculateAge(prevUser.dateOfBirth) !== helpers.calculateAge(nextUser.dateOfBirth))
-    );
-  }
-
-  render() {
-    const { user } = this.props;
+const UserTableRow = React.memo(
+  ({ user, onEditUser }: UserTableRowProps) => {
+    React.useEffect(() => {
+      logEvent('UserTableRow\t did mount with id=' + user.id);
+      return () => logEvent('UserTableRow\t will unmount with id=' + user.id);
+    }, []);
     logEvent('UserTableRow\t render with id=' + user.id);
+
+    const handleEditUser = () => {
+      onEditUser(user);
+    };
+
     return (
       <tr>
         <td>{user.surname}</td>
         <td>{user.firstName}</td>
         <td>{helpers.calculateAge(user.dateOfBirth)}</td>
         <td>
-          <input className="editButton" type="button" onClick={this.handleEditUser} value="Изменить" />
+          <input className="editButton" type="button" onClick={handleEditUser} value="Изменить" />
         </td>
       </tr>
     );
-  }
+  },
+  (prevProps, nextProps) => {
+    if (!prevProps) {
+      return true;
+    }
 
-  handleEditUser = () => {
-    this.props.onEditUser(this.props.user);
-  };
-}
+    const prevUser = prevProps.user;
+    const nextUser = nextProps.user;
+
+    return (
+      prevUser.firstName === nextUser.firstName &&
+      prevUser.surname === nextUser.surname &&
+      prevUser.dateOfBirth === nextUser.dateOfBirth &&
+      helpers.calculateAge(prevUser.dateOfBirth) === helpers.calculateAge(nextUser.dateOfBirth)
+    );
+  }
+);
 
 interface UserTableRowProps {
   user: User;
