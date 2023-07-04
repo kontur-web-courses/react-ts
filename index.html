@@ -1841,19 +1841,19 @@ const CakeContext = React.createContext();
 Без хуков:
 ```js
 function Glutton() {
-return (
-<CakeContext.Consumer>
-  {cake => <Hungry food={cake} />}
-</CakeContext.Consumer>
-);
+  return (
+    <CakeContext.Consumer>
+      {cake => <Hungry food={cake} />}
+    </CakeContext.Consumer>
+  );
 }
 ```
 
 С хуками:
 ```js
 function Glutton() {
-const cake = useContext(CakeContext);
-return <Hungry food={cake} />;
+  const cake = useContext(CakeContext);
+  return <Hungry food={cake} />;
 }
 ```
 
