@@ -127,7 +127,7 @@ root.render(<Form />);
     - Чтобы React пробрасывал ref, в конец HOC придется добавить такой код:
 
       React.forwardRef((props: React.ComponentProps<typeof FormRow>, ref) => (
-      <FormRow {...props} forwardedRef={ref} />
+        <FormRow {...props} forwardedRef={ref} />
       ))
 
       Предполагается, что компонент-обертка называется FormRow.
