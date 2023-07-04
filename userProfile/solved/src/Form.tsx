@@ -17,8 +17,8 @@ const cities = ['Москва', 'Урюпинск', 'Новосибирск', '�
 
 export default function Form() {
     const [modalOpened, setModalOpened] = React.useState(false);
-    const [saved, changeSaved] = React.useState(defaultData);
-    const [current, changeCurrent] = React.useState(defaultData);
+    const [saved, setSaved] = React.useState(defaultData);
+    const [current, setCurrent] = React.useState(defaultData);
 
     const renderForm = () => {
         const { name, surname, city } = current;
@@ -107,12 +107,12 @@ export default function Form() {
 
     const closeModal = () => {
         setModalOpened(false);
-        changeSaved({ ...current });
+        setSaved({ ...current });
     };
 
     const onChange = (field: keyof FormData) => {
         return (value: string) => {
-            changeCurrent(current => ({ ...current, [field]: value }));
+            setCurrent(current => ({ ...current, [field]: value }));
         };
     };
 

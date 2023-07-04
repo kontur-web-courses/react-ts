@@ -45,24 +45,24 @@ function logEvent(msg: string) {
 }
 
 const Users = () => {
-  const [users, changeUsers] = React.useState<User[]>(defaultUsers);
-  const [editingUser, changeEditingUser] = React.useState<User | null>(null);
+  const [users, setUsers] = React.useState<User[]>(defaultUsers);
+  const [editingUser, setEditingUser] = React.useState<User | null>(null);
 
   const handleAddUser = () => {
     const newId = helpers.getNewId(users);
     updateGeneration();
-    changeUsers([{ id: newId }, ...users]);
+    setUsers([{ id: newId }, ...users]);
   };
 
   const handleEditUser = (user: User) => {
     updateGeneration();
-    changeEditingUser(user);
+    setEditingUser(user);
   };
 
   const handleSaveUser = (user: User) => {
     updateGeneration();
-    changeEditingUser(null);
-    changeUsers(users.map(u => (u.id === user.id ? user : u)));
+    setEditingUser(null);
+    setUsers(users.map(u => (u.id === user.id ? user : u)));
   };
 
   if (editingUser) {

@@ -46,7 +46,7 @@ export function getNextTheme(theme: Theme) {
 }
 
 // Пригодится в конце.
-export const Context = React.createContext<Theme>(red );
+export const Context = React.createContext<Theme>(red);
 export const Provider = Context.Provider;
 export const Consumer = Context.Consumer;
 

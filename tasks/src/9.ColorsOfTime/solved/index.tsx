@@ -21,12 +21,12 @@ const ThemedButton = themes.withTheme(Button);
 type ColorsOfTimeProps = { timer: Timer };
 
 const ColorsOfTime = (props: ColorsOfTimeProps) => {
-  const [currentTime, changeCurrentTime] = React.useState<Date | null>(null);
-  const [theme, changeTheme] = React.useState<Theme>(themes.red);
+  const [currentTime, setCurrentTime] = React.useState<Date | null>(null);
+  const [theme, setTheme] = React.useState<Theme>(themes.red);
 
   React.useEffect(() => {
     const handleTimerUpdated = (currentTime: Date | null) => {
-      changeCurrentTime(currentTime);
+      setCurrentTime(currentTime);
     };
     props.timer.addUpdated(handleTimerUpdated);
     return () => {
@@ -44,7 +44,7 @@ const ColorsOfTime = (props: ColorsOfTimeProps) => {
         newTheme = themes.getNextTheme(theme);
         break;
     }
-    changeTheme(newTheme);
+    setTheme(newTheme);
   }, []);
 
   return (

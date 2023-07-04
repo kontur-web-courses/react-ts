@@ -29,7 +29,7 @@ const InputFormRow = createFormRow(Input);
 const ToggleFormRow = createFormRow(Toggle);
 
 const Form = () => {
-  const [opened, changeOpened] = React.useState(false);
+  const [opened, setOpened] = React.useState(false);
   const firstRowRef = React.useRef<Input>();
 
   React.useEffect(() => {
@@ -61,11 +61,11 @@ const Form = () => {
   };
 
   const handleOpen = () => {
-    changeOpened(true);
+    setOpened(true);
   };
 
   const handleSave = () => {
-    changeOpened(false);
+    setOpened(false);
   };
 
   const setFocusOnOpen = () => {

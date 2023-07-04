@@ -8,18 +8,18 @@ type EditUserFormProps = {
 };
 
 export default function EditUserForm(props: EditUserFormProps) {
-  const [user, changeUser] = React.useState<User>({} as User);
+  const [user, setUser] = React.useState<User>({} as User);
   const [changed, setChanged] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (props.user && user !== props.user && !changed) {
-      changeUser(props.user);
+      setUser(props.user);
     }
   }, [props.user]);
 
   const handleUserChange = (change: Partial<User>) => {
     setChanged(true);
-    changeUser({ ...user, ...change });
+    setUser({ ...user, ...change });
   };
 
   const handleSave = () => {
