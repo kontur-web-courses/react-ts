@@ -1,0 +1,139 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
+import Input, { InputProps } from './Input';
+import Toggle, { ToggleProps } from './Toggle';
+
+/**
+    InputFormRow — штука классная, но поддерживает только обычные input.
+    В новой форме понадобилось поддержать самописный Toggle — пришлось написать ToggleFormRow.
+    Получилось много дублирующегося кода и это грустно :(
+
+    На помощь могут прийти Higher Order Components (HOC) — функции вида Component → Component.
+    Используя HOC, можно создавать новые улучшенные компоненты из обычных:
+        const EnhancedComponent = enhance(JustComponent); // enhance — это HOC
+
+    HOC не получится использовать с элементами, например с input,
+    поэтому он уже был обернут в компонент Input.
+
+    1. Напиши HOC createFormRow, который можно будет использовать так:
+          const InputFormRow = createFormRow(Input);
+          const ToggleFormRow = createFormRow(Toggle);
+       В качестве примера используй HOC из enhance.js.
+
+    2. Используй createFormRow, удалив старые реализации InputFormRow, ToggleFormRow.
+
+    3. Открой React в Developer Tools в Chrome и убедись,
+       что благодаря заданию displayName получающиеся компоненты называются красиво.
+       Если у тебя нет пункта React в Developer Tools, поставь расширение для хрома React Developer Tools.
+
+    4. Сделай так, чтобы при открытии формы фокус устанавливался в первом поле формы.
+       Весь необходимый код в Form уже написан:
+       - firstRowRef установлен на первый ряд формы;
+       - при открытии формы вызывается firstRowRef.current.focus();
+       Но this.firstRowRef.current не указывает на input или Toggle, у которых определен метод focus.
+       HOC должен пересылать ref на WrappedComponent.
+
+       ЗАМЕТЬ, что реализовать метод focus в HOC — это плохая идея.
+       Если следовать ей, то надо в HOC добавлять все методы, которые хочется использовать «снаружи»
+       для всех возможных WrappedComponent, с которыми будет использоваться HOC.
+ */
+
+const Form = () => {
+  const [opened, setOpened] = React.useState(false);
+  const firstRowRef = React.useRef<Input>();
+
+  React.useEffect(() => {
+    setFocusOnOpen();
+  });
+
+  const renderOpenButton = () => {
+    return (
+      <div className="openContainer">
+        <input type="button" className="actionButton" value="Показать форму" onClick={handleOpen} />
+      </div>
+    );
+  };
+
+  const renderForm = () => {
+    return (
+      <div className="form">
+        <form>
+          <InputFormRow label="Фамилия" type="text" />
+          <InputFormRow label="Имя" type="text" />
+          <InputFormRow label="Отчество" type="text" />
+          <ToggleFormRow label="Вегетарианец" />
+        </form>
+        <div className="saveContainer">
+          <input type="submit" className="actionButton" value="Сохранить" onClick={handleSave} />
+        </div>
+      </div>
+    );
+  };
+
+  const handleOpen = () => {
+    setOpened(true);
+  };
+
+  const handleSave = () => {
+    setOpened(false);
+  };
+
+  const setFocusOnOpen = () => {
+    if (opened) {
+      // Проверка перед вызовом нужна,
+      // пока firstRowRef не устанавливается корректно.
+      firstRowRef?.current?.focus?.();
+    }
+  };
+
+  return (
+    <div>
+      {!opened && renderOpenButton()}
+      {opened && renderForm()}
+    </div>
+  );
+};
+
+type FormRowProps = { label: string };
+
+const InputFormRow = ({ label, ...rest }: FormRowProps & InputProps) => {
+  return (
+    <div className="row">
+      <div className="label">{label}</div>
+      <Input {...rest} />
+    </div>
+  );
+};
+
+const ToggleFormRow = ({ label, ...rest }: FormRowProps & ToggleProps) => {
+  return (
+    <div className="row">
+      <div className="label">{label}</div>
+      <Toggle {...rest} />
+    </div>
+  );
+};
+
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Form />);
+
+/**
+    Подсказки к 4:
+    - Нельзя пробросить переменную для ref из внешнего компонента во внутренний через атрибут ref,
+      потому что он зарезервирован — придется использовать другой атрибут. Например, forwardedRef.
+
+    - Чтобы React пробрасывал ref, в конец HOC придется добавить такой код:
+
+      React.forwardRef((props: React.ComponentProps<typeof FormRow>, ref) => (
+        <FormRow {...props} forwardedRef={ref} />
+      ))
+
+      Предполагается, что компонент-обертка называется FormRow.
+      Заметь, что React.forwardRef — это почти HOC, а forward — это почти функция-компонент.
+      Подробнее про ForwardedRef написано в документации https://reactjs.org/docs/forwarding-refs.html
+
+    - Когда ref уже лежит в отдельном атрибуте, его несложно использовать:
+        <WrappedComponent ref={forwardedRef} {...rest} />
+ */

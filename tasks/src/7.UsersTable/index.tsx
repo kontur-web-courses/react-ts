@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import EditUserForm from './EditUserForm';
 import './styles.css';
 import * as helpers from './helpers';
@@ -21,18 +21,15 @@ import defaultUsers, { User } from './defaultUsers';
        UserTable render, UserTableRow render и UserTableRow mount для новой строки
     3. При нажатии на кнопку изменить: никаких событий
     4. При сохранении после изменения видимого поля: UserTable render, UserTableRow render этого ряда
-    5. При сохранении после изменения невидимого поля : UserTable render
+    5. При сохранении после изменения невидимого поля: UserTable render
 
     FYI, в коде использованы такие фишки JS:
     - «Spread-оператор для массива»
-      Создает новый массив, причем сначала в него добаляются все элементы objs, а затем еще один элемент.
+      Создает новый массив, причем сначала в него добавляются все элементы objs, а затем еще один элемент.
         [...objs, { id: 1 }]
     - «Spread-оператор для объекта»
       Создает новый объект, причем сначала заполняет его свойствами из obj, а затем добавляет новое свойство.
         { ...obj, key: value }
-    - «Деконструкция»
-      Создает локальные переменные const a = this.state.a и const b = this.state.b.
-        const { a, b } = this.state;
  */
 
 let generation = 1;
@@ -47,96 +44,72 @@ function logEvent(msg: string) {
   console.log(` ${generation}.${generationEvents++}\t${msg}`);
 }
 
-class Users extends React.Component<{}, UsersState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      users: defaultUsers,
-      editingUser: null
-    };
-  }
+const Users = () => {
+  const [users, setUsers] = React.useState<User[]>(defaultUsers);
+  const [editingUser, setEditingUser] = React.useState<User | null>(null);
 
-  render() {
-    const { users, editingUser } = this.state;
-    if (editingUser) {
-      return (
-        <div className="root">
-          <EditUserForm user={editingUser} onSave={this.handleSaveUser} />
-          <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
-        </div>
-      );
-    }
+  const handleAddUser = () => {
+    const newId = helpers.getNewId(users);
+    updateGeneration();
+    setUsers([{ id: newId }, ...users]);
+  };
+
+  const handleEditUser = (user: User) => {
+    updateGeneration();
+    setEditingUser(user);
+  };
+
+  const handleSaveUser = (user: User) => {
+    updateGeneration();
+    setEditingUser(null);
+    setUsers(users.map(u => (u.id === user.id ? user : u)));
+  };
+
+  if (editingUser) {
     return (
       <div className="root">
-        <UserTable users={users} onEditUser={this.handleEditUser} onAddUser={this.handleAddUser} />
+        <EditUserForm user={editingUser} onSave={handleSaveUser} />
+        <UserTable users={users} onEditUser={handleEditUser} onAddUser={handleAddUser} />
       </div>
     );
   }
+  return (
+    <div className="root">
+      <UserTable users={users} onEditUser={handleEditUser} onAddUser={handleAddUser} />
+    </div>
+  );
+};
 
-  handleAddUser = () => {
-    const newId = helpers.getNewId(this.state.users);
-    updateGeneration();
-    this.setState({
-      users: [{ id: newId }, ...this.state.users]
-    });
-  };
-
-  handleEditUser = (user: User) => {
-    updateGeneration();
-    this.setState({
-      editingUser: user
-    });
-  };
-
-  handleSaveUser = (user: User) => {
-    updateGeneration();
-    this.setState({
-      editingUser: null,
-      users: this.state.users.map(u => (u.id === user.id ? user : u))
-    });
-  };
-}
-
-interface UsersState {
-  users: User[];
-  editingUser: User | null;
-}
-
-class UserTable extends React.Component<UserTableProps> {
-  componentDidMount() {
+const UserTable = ({ users, onEditUser, onAddUser }: UserTableProps) => {
+  React.useEffect(() => {
     logEvent('UserTable\t\t did mount');
-  }
+    return () => logEvent('UserTable\t\t will unmount');
+  }, []);
 
-  componentWillUnmount() {
-    logEvent('UserTable\t\t will unmount');
-  }
+  logEvent('UserTable\t\t render');
 
-  render() {
-    logEvent('UserTable\t\t render');
-    const { users, onEditUser, onAddUser } = this.props;
-    return (
-      <div className="table">
-        <table>
-          <thead>
-            <tr>
-              <th>Фамилия</th>
-              <th>Имя</th>
-              <th>Возраст</th>
-              <th>
-                <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <UserTableRow user={user} key={index} onEditUser={onEditUser} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="table">
+      <table>
+        <thead>
+          <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Возраст</th>
+            <th>
+              <input type="submit" className="editButton" value="Добавить" onClick={onAddUser} />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user, index) => (
+            <UserTableRow user={user} key={index} onEditUser={onEditUser} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 interface UserTableProps {
   users: User[];
@@ -144,41 +117,37 @@ interface UserTableProps {
   onAddUser: () => void;
 }
 
-class UserTableRow extends React.Component<UserTableRowProps> {
-  componentDidMount() {
-    logEvent('UserTableRow\t did mount with id=' + this.props.user.id);
-  }
+const UserTableRow = ({ user, onEditUser }: UserTableRowProps) => {
+  React.useEffect(() => {
+    logEvent('UserTableRow\t did mount with id=' + user.id);
+    return () => logEvent('UserTableRow\t will unmount with id=' + user.id);
+  }, []);
+  logEvent('UserTableRow\t render with id=' + user.id);
 
-  componentWillUnmount() {
-    logEvent('UserTableRow\t will unmount with id=' + this.props.user.id);
-  }
-
-  render() {
-    const { user } = this.props;
-    logEvent('UserTableRow\t render with id=' + user.id);
-    return (
-      <tr>
-        <td>{user.surname}</td>
-        <td>{user.firstName}</td>
-        <td>{helpers.calculateAge(user.dateOfBirth)}</td>
-        <td>
-          <input className="editButton" type="button" onClick={this.handleEditUser} value="Изменить" />
-        </td>
-      </tr>
-    );
-  }
-
-  handleEditUser = () => {
-    this.props.onEditUser(this.props.user);
+  const handleEditUser = () => {
+    onEditUser(user);
   };
-}
+
+  return (
+    <tr>
+      <td>{user.surname}</td>
+      <td>{user.firstName}</td>
+      <td>{helpers.calculateAge(user.dateOfBirth)}</td>
+      <td>
+        <input className="editButton" type="button" onClick={handleEditUser} value="Изменить" />
+      </td>
+    </tr>
+  );
+};
 
 interface UserTableRowProps {
   user: User;
   onEditUser: (user: User) => void;
 }
 
-ReactDom.render(<Users />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Users />);
 
 /**
     Подсказки:

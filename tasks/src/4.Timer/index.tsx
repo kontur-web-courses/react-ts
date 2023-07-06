@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 /**
@@ -55,7 +55,9 @@ class TimeDisplay extends React.Component<{}, TimeDisplayState> {
   }
 }
 
-ReactDom.render(<Timer />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<Timer />);
 
 /**
     Подсказки:

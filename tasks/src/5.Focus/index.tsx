@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 /**
@@ -35,7 +35,9 @@ class InputFormRow extends React.Component<InputFormRowProps> {
   handleClick = () => {};
 }
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="form">
     <form>
       <InputFormRow label="Фамилия" type="text" defaultValue="Иванов" />
@@ -46,8 +48,7 @@ ReactDom.render(
     <div className="saveContainer">
       <input type="submit" className="actionButton" value="Сохранить" />
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );
 
 /**

@@ -5,7 +5,6 @@ const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-
 const entries = {};
 const rewrites = [];
 for (var k in tasks) {
@@ -16,7 +15,7 @@ function addTask(order, id) {
   const orderAndId = order + '.' + id;
   entries[id] = [`./src/${orderAndId}/index`];
   rewrites.push({
-    from: new RegExp('^\/(' + orderAndId.replace(/\./, '\\.') + ')|(' + order + ')$', 'i'),
+    from: new RegExp('^/(' + orderAndId.replace(/\./, '\\.') + ')|(' + order + ')$', 'i'),
     to: '/src/' + orderAndId + '/index.html'
   });
 }
@@ -26,7 +25,7 @@ module.exports = {
   output: {
     path: path.resolve('build'),
     publicPath: 'build',
-    filename: '[name].js',
+    filename: '[name].js'
   },
   devtool: 'source-map',
   module: {
@@ -46,20 +45,23 @@ module.exports = {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
-      process: "process/browser"
+      process: 'process/browser'
     }
   },
   devServer: {
-    writeToDisk: true,
-    historyApiFallback: {
-      rewrites: rewrites,
+    static: { directory: path.resolve(__dirname) },
+    devMiddleware: {
+      writeToDisk: true
     },
+    historyApiFallback: {
+      rewrites: rewrites
+    }
   },
   plugins: [
-      new webpack.ProvidePlugin({
-        process: 'process/browser',
-      }),
-      new ForkTsCheckerWebpackPlugin(),
-      new ESLintPlugin()
+    new webpack.ProvidePlugin({
+      process: 'process/browser'
+    }),
+    new ForkTsCheckerWebpackPlugin(),
+    new ESLintPlugin()
   ]
 };

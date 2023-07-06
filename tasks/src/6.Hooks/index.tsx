@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 /**
@@ -88,4 +88,6 @@ class CounterBlock extends React.Component<{}, CounterBlockProps> {
   }
 }
 
-ReactDom.render(<App />, document.getElementById('app'));
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(<App />);

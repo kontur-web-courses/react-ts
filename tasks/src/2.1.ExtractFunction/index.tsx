@@ -1,12 +1,14 @@
 import React from 'react';
-import ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 /**
      Выдели метод отрисовки лота (renderLot), метод отрисовки поста (renderPost) и используй их.
  */
 
-ReactDom.render(
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
   <div className="page">
     <div className="lot">
       <div className="lotName">Форма для выпекания</div>
@@ -30,8 +32,7 @@ ReactDom.render(
         <div className="postMessage">Можно использовать для выпекания чизкейков :)</div>
       </div>
     </div>
-  </div>,
-  document.getElementById('app')
+  </div>
 );
 
 /**

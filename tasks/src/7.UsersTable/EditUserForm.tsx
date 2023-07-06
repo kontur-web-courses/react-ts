@@ -1,105 +1,80 @@
 import React from 'react';
-import ReactDom from 'react-dom';
-import PropTypes from 'prop-types';
 import * as helpers from './helpers';
 import { User } from './defaultUsers';
 
-export default class EditUserForm extends React.Component<EditUserFormProps, EditUserFormState> {
-  constructor(props: EditUserFormProps) {
-    super(props);
-    this.state = {
-      user: {}
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps: EditUserFormProps, prevState: EditUserFormState) {
-    if (nextProps.user && prevState.user !== nextProps.user && !prevState.changed) {
-      return { user: nextProps.user };
-    }
-    return null;
-  }
-
-  render() {
-    const { user = {} } = this.state;
-    return (
-      <div className="form">
-        <form onSubmit={this.handleSave}>
-          <div className="row">
-            <div className="label">Фамилия</div>
-            <input
-              type="text"
-              value={user.surname || ''}
-              onChange={e => this.handleUserChange({ surname: e.target.value })}
-            />
-          </div>
-          <div className="row">
-            <div className="label">Имя</div>
-            <input
-              type="text"
-              value={user.firstName || ''}
-              onChange={e => this.handleUserChange({ firstName: e.target.value })}
-            />
-          </div>
-          <div className="row">
-            <div className="label">Отчество</div>
-            <input
-              type="text"
-              value={user.patronymic || ''}
-              onChange={e => this.handleUserChange({ patronymic: e.target.value })}
-            />
-          </div>
-          <div className="row">
-            <div className="label">Дата рождения</div>
-            <input
-              type="date"
-              value={helpers.formatDate(user.dateOfBirth)}
-              onChange={e => this.handleUserChange({ dateOfBirth: new Date(e.target.value) })}
-            />
-          </div>
-          <div className="row">
-            <div className="label">Вегетарианец</div>
-            <input
-              type="checkbox"
-              checked={user.isVegetarian || false}
-              onChange={e => this.handleUserChange({ isVegetarian: e.target.checked })}
-            />
-          </div>
-          <div className="row">
-            <div className="label">Пожелания</div>
-            <input
-              type="text"
-              value={user.wishes || ''}
-              onChange={e => this.handleUserChange({ wishes: e.target.value })}
-            />
-          </div>
-        </form>
-        <div className="saveContainer">
-          <input type="submit" className="actionButton" value="Сохранить" onClick={this.handleSave} />
-        </div>
-      </div>
-    );
-  }
-
-  handleUserChange = (change: Partial<User>) => {
-    this.setState({
-      changed: true,
-      user: { ...this.state.user, ...change }
-    });
-  };
-
-  handleSave = () => {
-    if (this.state.user) {
-      this.props.onSave(this.state.user as User);
-    }
-  };
-}
-
-interface EditUserFormProps {
+type EditUserFormProps = {
   user: User;
   onSave: (user: User) => void;
-}
+};
 
-interface EditUserFormState {
-  user?: Partial<User>;
-  changed?: boolean;
+export default function EditUserForm(props: EditUserFormProps) {
+  const [user, setUser] = React.useState<User>({} as User);
+  const [changed, setChanged] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (props.user && user !== props.user && !changed) {
+      setUser(props.user);
+    }
+  }, [props.user]);
+
+  const handleUserChange = (change: Partial<User>) => {
+    setChanged(true);
+    setUser({ ...user, ...change });
+  };
+
+  const handleSave = () => {
+    if (user) {
+      props.onSave(user);
+    }
+  };
+
+  return (
+    <div className="form">
+      <form onSubmit={handleSave}>
+        <div className="row">
+          <div className="label">Фамилия</div>
+          <input type="text" value={user.surname || ''} onChange={e => handleUserChange({ surname: e.target.value })} />
+        </div>
+        <div className="row">
+          <div className="label">Имя</div>
+          <input
+            type="text"
+            value={user.firstName || ''}
+            onChange={e => handleUserChange({ firstName: e.target.value })}
+          />
+        </div>
+        <div className="row">
+          <div className="label">Отчество</div>
+          <input
+            type="text"
+            value={user.patronymic || ''}
+            onChange={e => handleUserChange({ patronymic: e.target.value })}
+          />
+        </div>
+        <div className="row">
+          <div className="label">Дата рождения</div>
+          <input
+            type="date"
+            value={helpers.formatDate(user.dateOfBirth)}
+            onChange={e => handleUserChange({ dateOfBirth: new Date(e.target.value) })}
+          />
+        </div>
+        <div className="row">
+          <div className="label">Вегетарианец</div>
+          <input
+            type="checkbox"
+            checked={user.isVegetarian || false}
+            onChange={e => handleUserChange({ isVegetarian: e.target.checked })}
+          />
+        </div>
+        <div className="row">
+          <div className="label">Пожелания</div>
+          <input type="text" value={user.wishes || ''} onChange={e => handleUserChange({ wishes: e.target.value })} />
+        </div>
+      </form>
+      <div className="saveContainer">
+        <input type="submit" className="actionButton" value="Сохранить" onClick={handleSave} />
+      </div>
+    </div>
+  );
 }

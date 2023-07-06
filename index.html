@@ -20,7 +20,7 @@
 		.fragment-container {
 			position: relative;
 		}
-		
+
 		.fragment-container .fragment {
 			position: absolute;
 			top: 0px;
@@ -33,7 +33,7 @@
           display: block;
         }
     </style>
-	
+
 	<title>React</title>
 </head>
 <body>
@@ -123,7 +123,7 @@ function ButtonWithHandle() {
     function handleClick() {
 	    ...
 	}
-	
+
 	return <input type="button" onClick={handleClick}/>
 }
 ```
@@ -160,9 +160,22 @@ React решает одну проблему и делает это хорошо
 
 ### Вставка React на страницу
 
-<pre><code class="lang-html hljs">&lt;div id="app"&gt;&lt;/div&gt;</code></pre>
-
 ```js
+//index.html
+<div id="app"></div>
+```
+
+**Способ 18+**
+```js
+//index.tsx
+const domNode = document.getElementById('app') as HTMLElement;
+const root = createRoot(domNode);
+root.render(
+<div className="fromReact"></div>);
+```
+**Старый вариант**
+```js
+//index.tsx
 ReactDom.render(
   <div className="fromReact"></div>,
   document.getElementById('app')
@@ -396,13 +409,13 @@ _reactDom2.default.render(mydom, document.getElementById('app'));
                 },
                 "_owner": null,
                 "_store": {
-                  
+
                 }
               }
             },
             "_owner": null,
             "_store": {
-              
+
             }
           },
           {
@@ -416,20 +429,20 @@ _reactDom2.default.render(mydom, document.getElementById('app'));
             },
             "_owner": null,
             "_store": {
-              
+
             }
           }
         ]
       },
       "_owner": null,
       "_store": {
-        
+
       }
     }
   },
   "_owner": null,
   "_store": {
-    
+
   }
 }
 ```
@@ -538,7 +551,7 @@ The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
 ```
 
 **&&**
-```js  
+```js
 {unreadMessages.length > 0 &&
   <h2>You have {unreadMessages.length} unread messages.</h2>}
 ```
@@ -702,7 +715,7 @@ class MyComponent extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
   }
-  
+
   render() {
     // Деструктурирующее присваивание
     const { a, b } = this.props;
@@ -964,7 +977,7 @@ render () {
 // После render ссылка окажется в this.myRef.current
 ```
 
-** Хороший проверенный способ **
+** Старый способ **
 ```js
 myRef: HTMLDivElement | null
 
@@ -983,13 +996,13 @@ render () {
 ### Можно повешать на элемент или компонент
 
 ```js
-<input ref={this.myRef} />
+<input ref={this.myRef} /> // this.myRef = HTMLInputElement
 
 ```
 
 
 ```js
-<MyComponent ref={this.myRef} />
+<MyComponent ref={this.myRef} /> // this.myRef = MyComponent
 
 ```
 
@@ -1222,7 +1235,7 @@ function MyFunctionalComponent() {
 
     return (
         <>
-            [1, 2, 3, 4, 5].map(value => 
+            [1, 2, 3, 4, 5].map(value =>
               (<button onClick={logClick}>Кнопка №{value}</button>)
             )
         </>
@@ -1285,8 +1298,8 @@ function MyFunctionalComponent() {
 
 1. Перейди в директорию задачи: в корне проекта директория userProfile
 2. Установи в ней зависимости `npm i`
-3. Останови прошлый webpack-сервер, если он все еще запущен.
-4. Запусти новый сервер командой `npm start`
+3. Запусти новый сервер командой `npm start`
+4. В браузере открой <a href="http://localhost:8081">http://localhost:8081</a>
 5. В файле `src/index.tsx` описание задания
 
 
@@ -1390,7 +1403,7 @@ class Parent extends React.Component {
   - Child получает новые свойства
   - Child render
     - ...
-	
+
 *Но возможны варианты!*
 
 ***
@@ -1633,18 +1646,17 @@ const EnhancedComponent = enhance(JustComponent); // enhance — это HOC
 ### Что происходит в enhance
 
 ```js
-function enhance(WrappedComponent) { // Функция принимает компонент...
-    class Enhanced extends React.Component { // ...создает новый компонент...
-      render() {
-        // Свойства разделяются на две части
-        const { value1, value2, ...rest } = this.props;
+// Функция принимает компонент...
+function enhance<T extends {}>(WrappedComponent: React.ComponentType<T>) {
+      // ...создает новый компонент...
+      const Enhanced: React.FC<EnhanceHOCProps & T> = props => {
+
         return ( // Рендерим новый компонент
-            <span className={value2}>
-                { value1 }
-                <WrappedComponent {...rest} isSelected={true} />
+            <span className={props.value2}>
+                { props.value1 }
+                <WrappedComponent {...props} isSelected={true} />
             </span>
         )}
-    };
 
     return Enhanced; // ...и возвращает созданный компонент.
 }
@@ -1677,13 +1689,15 @@ const someRef = React.createRef();
 <EnhancedButton label="Click Me" ref={someRef} />;
 ```
 ```js
-function enhance(WrappedComponent) {
-  class Enhanced extends React.Component {
-      render() {
-        const {forwardedRef, ...rest} = this.props;
-        return <WrappedComponent ref={forwardedRef} {...rest} />
-      }
-  }  
+type EnhanceHOCProps = {
+    forwardedRef?: React.ForwardedRef<unknown>
+    }
+```
+```js
+function enhance<T extends {}>(WrappedComponent: React.ComponentType<T>)  {
+  const Enhanced: React.FC<EnhanceHOCProps & T> = props => {
+    return <WrappedComponent ref={forwardedRef} {...rest} />
+  }
   // React не передает значение атрибута "ref" в props обычных компонентов.
   // Но компонент React.forwardRef дает нам доступ к значению атрибута "ref"
   // и теперь это значение можно передать компоненту под другим именем.
@@ -1805,7 +1819,7 @@ function useMyOwnHook(initialValue) {
 ```js
 const CakeContext = React.createContext();
 ```
-  
+
 Поставка значения:
 ```html
 <CakeContext.Provider value={cheeseCake}>
@@ -1819,10 +1833,6 @@ const CakeContext = React.createContext();
   {cake => <Hungry food={cake} />}
 </CakeContext.Consumer>
 ```
-
-***
-
-### Задача 9. ColorsOfTime
 
 ***
 
@@ -1847,6 +1857,11 @@ function Glutton() {
 }
 ```
 
+***
+
+### Задача 9. ColorsOfTime
+
+
 </script></section>
 
 
@@ -1865,7 +1880,7 @@ function Glutton() {
 <a href="http://bit.ly/kontur-courses-feedback">http://bit.ly/kontur-courses-feedback</a>
 
 </script></section>
-			
+
 </div></div>
 </body>
 </html>
