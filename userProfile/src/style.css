@@ -1,3 +1,22 @@
+p {
+    margin: 0 0;
+}
+
 body {
     font-family: "Segoe UI", Helvetica, sans-serif;
+}
+
+.form .inputRow .error-message {
+    color: red;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.form .form-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.form .inputRow .title{   
+    width: 100px;
 }
